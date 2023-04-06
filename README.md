@@ -1,7 +1,7 @@
 # TLStore
 
 ## Clone project :
-  `git clone https://github.com/PhanCongTu/TLStore.git`
+  `https://github.com/PhanCongTu/TuOnlineClothingStore.git`
   
 => Vào file application.properties đổi `username` và `password` của `datasource`\
 Tạo schema `tlstore` trong MySQL
