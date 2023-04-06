@@ -1,4 +1,4 @@
-# TLStore
+# TuOnlineClothingStore
 
 ## Clone project :
   `https://github.com/PhanCongTu/TuOnlineClothingStore.git`
