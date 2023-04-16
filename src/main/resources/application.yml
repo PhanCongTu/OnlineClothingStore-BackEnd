@@ -1,0 +1,26 @@
+cloudinary:
+    api-key: 175631491224487
+    api-secret: TmeGg3OGrfTjPGmY4Wj9cBnNYy8
+    cloud-name: dzjoxccho
+server:
+    port: 8080
+spring:
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        password: 123456
+        url: jdbc:mysql://localhost:3306/tuonlineclothingstore
+        username: root
+    jackson:
+        serialization:
+            FAIL_ON_EMPTY_BEANS: false
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+                globally_quoted_identifiers: true
+        show-sql: true
+    mvc:
+        pathmatch:
+            matching-strategy: ANT_PATH_MATCHER

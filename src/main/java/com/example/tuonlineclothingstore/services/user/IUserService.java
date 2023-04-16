@@ -27,7 +27,9 @@ public interface IUserService {
     UserDto updateUser(Long id, UserDto UserDto) throws NoSuchFieldException, IllegalAccessException;
 
     // Hàm deleteUser chỉ delete bằng cách set thuộc tính IsDeleted = true chứ không xoá hẳn trong database
-    void deleteUser(Long UserId);
+    void changeStatusUser(Long UserId);
 
     UserDto getUserByUserNameAndPassword(String userName, String password);
+
+    void deleteUser(Long userId);
 }

@@ -1,6 +1,6 @@
 package com.example.tuonlineclothingstore.dtos;
 
-import com.example.tuonlineclothingstore.utils.Role;
+import com.example.tuonlineclothingstore.utils.EnumRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class UserDto {
 
     private String email;
 
-    private List<Role> roles;
+    private List<String> roles;
 
     private Boolean isActive;
 

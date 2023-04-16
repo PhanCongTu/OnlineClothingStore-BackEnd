@@ -4,10 +4,11 @@ import com.example.tuonlineclothingstore.dtos.SignUp;
 import com.example.tuonlineclothingstore.dtos.UserDto;
 import com.example.tuonlineclothingstore.dtos.UserPagination;
 import com.example.tuonlineclothingstore.entities.User;
+import com.example.tuonlineclothingstore.exceptions.InvalidException;
 import com.example.tuonlineclothingstore.exceptions.NotFoundException;
 import com.example.tuonlineclothingstore.repositories.UserRepository;
 import com.example.tuonlineclothingstore.utils.MapperUtils;
-import com.example.tuonlineclothingstore.utils.Role;
+import com.example.tuonlineclothingstore.utils.EnumRole;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
-import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,9 +86,8 @@ public class UserServiceImpl implements IUserService {
     @Override
     public UserDto createUser(SignUp signUp) {
         User User = modelMapper.map(signUp, User.class);
-        List<Role> roles = new ArrayList<>();
-        roles.add(Role.ROLE_USER);
-        User.setRoles(roles);
+        if(userRepository.existsByUserName(signUp.getUserName().trim())) throw new InvalidException("Username exist !!");
+        User.setRoles(Arrays.asList(EnumRole.ROLE_USER.name()));
         User.setIsActive(true);
         User savedUser = userRepository.save(User);
         UserDto saveUserDto = modelMapper.map(savedUser, UserDto.class);
@@ -134,11 +133,11 @@ public class UserServiceImpl implements IUserService {
 
     // Hàm deleteUser chỉ delete bằng cách set thuộc tính IsDeleted = true chứ không xoá hẳn trong database
     @Override
-    public void deleteUser(Long UserId) {
+    public void changeStatusUser(Long UserId) {
         Optional<User> existingUser = userRepository.findById(UserId);
         if (!existingUser.isPresent()) throw new NotFoundException("Unable to dalete User!");
 
-        existingUser.get().setIsActive(false);
+        existingUser.get().setIsActive(!existingUser.get().getIsActive());
         existingUser.get().setUpdateAt(new Date(new java.util.Date().getTime()));
         userRepository.save(existingUser.get());
     }
@@ -151,4 +150,10 @@ public class UserServiceImpl implements IUserService {
         return modelMapper.map(user, UserDto.class);
     }
 
+    @Override
+    public void deleteUser(Long userId) {
+        Optional<User> existingUser = userRepository.findById(userId);
+        if (!existingUser.isPresent()) throw new NotFoundException("Unable to dalete User!");
+        userRepository.deleteById(userId);
+    }
 }

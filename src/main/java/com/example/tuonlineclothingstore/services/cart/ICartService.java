@@ -10,10 +10,8 @@ public interface ICartService {
 
     CartDto getCartById(Long cartId);
 
-    CartDto addCart(CartDto cartDto, Long userId);
+    CartDto addOrUpdateCart(CartDto cartDto, Long userId);
 
-
-    CartDto updateCart(Long cartId, int quantity);
 
     int countAllCartByUserId(Long userId);
 

@@ -77,11 +77,19 @@ public class UserController{
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Vô hiệu hóa user")
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") Long UserId){
-        iUserService.deleteUser(UserId);
-        return new ResponseEntity<>("User successfully deleted !!", HttpStatus.OK);
+    @ApiOperation(value = "Đổi trạng thái của User")
+    @PutMapping(value = "/change-status/{userId}")
+    public ResponseEntity<String> changeStatusUser(@PathVariable("userId") Long userId){
+        UserDto userDto = iUserService.getUserById(userId);
+        iUserService.changeStatusUser(userId);
+        return new ResponseEntity<>(String.format("User đã được thay đổi trạng thái từ %s thành %s",
+                userDto.getIsActive(), !userDto.getIsActive()), HttpStatus.OK);
+    }
+    @ApiOperation(value = "Xóa User khỏi hệ thống")
+    @DeleteMapping(value = "/delete/{userId}")
+    public ResponseEntity<String> DeleteUser(@PathVariable("userId") Long userId){
+        iUserService.deleteUser(userId);
+        return new ResponseEntity<>(String.format("User có id là %s đã bị xóa", userId), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Đăng nhập")

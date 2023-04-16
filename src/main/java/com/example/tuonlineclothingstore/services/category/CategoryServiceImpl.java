@@ -81,6 +81,7 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
         Category category = modelMapper.map(categoryDto, Category.class);
+        if (category.getIsDeleted()==null) category.setIsDeleted(false);
         Category savedCategory = categoryRepository.save(category);
         CategoryDto saveCategoryDto = modelMapper.map(savedCategory, CategoryDto.class);
         return saveCategoryDto;

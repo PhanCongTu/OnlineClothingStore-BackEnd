@@ -1,12 +1,11 @@
 package com.example.tuonlineclothingstore.entities;
 
-import com.example.tuonlineclothingstore.utils.Role;
 import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,7 +47,8 @@ public class User implements Serializable {
     private Date updateAt= new Date(new java.util.Date().getTime());
 
     @ElementCollection(fetch = FetchType.EAGER)
-    List<Role> roles;
+    @Column
+    private List<String> roles = new ArrayList<String>();
 
     @OneToMany(
             mappedBy = "user",

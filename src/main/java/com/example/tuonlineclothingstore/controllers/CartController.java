@@ -31,8 +31,8 @@ public class CartController {
         return new ResponseEntity<>(listCart, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Thêm cart mới")
-    @PostMapping("/add")
+    @ApiOperation(value = "Thêm cart mới hoặc cập nhật lại số lượng product nếu đã có trong cart")
+    @PostMapping("/addOrUpdate")
     public ResponseEntity<CartDto> createCategory(@RequestParam("productId") Long productId,
                                                   @RequestParam("userId") Long userId,
                                                   @RequestParam("quantity") int quantity) {
@@ -40,17 +40,10 @@ public class CartController {
         CartDto newCartDto = new CartDto();
         newCartDto.setQuantity(quantity);
         newCartDto.setProduct(productDto);
-        CartDto savedCartDto = iCartService.addCart(newCartDto, userId);
+        CartDto savedCartDto = iCartService.addOrUpdateCart(newCartDto, userId);
         return new ResponseEntity<>(savedCartDto, HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "Cập nhật lại cart")
-    @PutMapping("/update/{cartId}")
-    public ResponseEntity<CartDto> updateCategory(@PathVariable("cartId")  Long cartId,
-                                                  @RequestBody int quantity) {
-        CartDto newCartDto = iCartService.updateCart(cartId,quantity);
-        return new ResponseEntity<>(newCartDto, HttpStatus.OK);
-    }
 
     @ApiOperation(value = "Xóa cart theo id")
     @DeleteMapping("/delete/{cartId}")

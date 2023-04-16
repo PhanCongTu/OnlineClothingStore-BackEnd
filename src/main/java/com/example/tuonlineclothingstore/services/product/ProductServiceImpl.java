@@ -5,6 +5,7 @@ import com.example.tuonlineclothingstore.dtos.ProductDto;
 import com.example.tuonlineclothingstore.dtos.ProductPagination;
 import com.example.tuonlineclothingstore.entities.Category;
 import com.example.tuonlineclothingstore.entities.Product;
+import com.example.tuonlineclothingstore.exceptions.InvalidException;
 import com.example.tuonlineclothingstore.exceptions.NotFoundException;
 import com.example.tuonlineclothingstore.repositories.ProductRepository;
 import com.example.tuonlineclothingstore.services.category.ICategoryService;
@@ -85,6 +86,11 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ProductDto createProduct(ProductDto ProductDto) {
+        CategoryDto cat = iCategoryService.getCategoryById(ProductDto.getCategory().getId());
+        if (cat.getIsDeleted()){
+            throw new InvalidException("Category has been deleted !");
+        }
+
         Product product = modelMapper.map(ProductDto, Product.class);
         Product savedProduct = productRepository.save(product);
         ProductDto saveProductDto = modelMapper.map(savedProduct, ProductDto.class);

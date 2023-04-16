@@ -39,23 +39,24 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
-    public CartDto addCart(CartDto cartDto, Long userId){
+    public CartDto addOrUpdateCart(CartDto cartDto, Long userId){
+        List<CartDto> carts = getAllCartByUserId(userId);
+        int plus = cartDto.getQuantity();
+        for (CartDto cart: carts
+             ) {
+            if (cart.getProduct().getId() == cartDto.getProduct().getId()){
+                cartDto = cart ;
+                cartDto.setQuantity(cart.getQuantity() + plus);
+//                Cart newCart = modelMapper.map(cart, Cart.class);
+//                newCart.setUser(modelMapper.map(iUserService.getUserById(userId), User.class));
+//                cartRepository.save(modelMapper.map(newCart, Cart.class));
+                break;
+            }
+        }
     Cart cart = modelMapper.map(cartDto, Cart.class);
     cart.setUser(modelMapper.map(iUserService.getUserById(userId), User.class));
     CartDto savedCardDto = modelMapper.map(cartRepository.save(cart), CartDto.class);
         return savedCardDto;
-    }
-    @Override
-    public CartDto updateCart(Long cartId, int quantity){
-//        Cart cart = modelMapper.map(cartDto, Cart.class);
-//        CartDto updatedCardDto = modelMapper.map(cartRepository.save(cart), CartDto.class);
-//        return updatedCardDto;
-        Cart cart = cartRepository.findById(cartId).orElse(null);
-        if (cart==null) throw new NotFoundException("Cant find category!");
-
-        cart.setQuantity(quantity);
-        CartDto cartDto = modelMapper.map(cartRepository.save(cart), CartDto.class);
-        return cartDto;
     }
 
     @Override
