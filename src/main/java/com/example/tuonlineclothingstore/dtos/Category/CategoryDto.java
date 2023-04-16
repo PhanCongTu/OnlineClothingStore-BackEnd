@@ -1,4 +1,4 @@
-package com.example.tuonlineclothingstore.dtos;
+package com.example.tuonlineclothingstore.dtos.Category;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

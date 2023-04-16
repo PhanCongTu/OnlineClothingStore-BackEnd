@@ -1,82 +1,65 @@
 package com.example.tuonlineclothingstore.controllers;
 
-import com.example.tuonlineclothingstore.dtos.CategoryDto;
+import com.example.tuonlineclothingstore.dtos.Category.CreateCategoryDto;
+import com.example.tuonlineclothingstore.dtos.Category.CategoryDto;
+import com.example.tuonlineclothingstore.dtos.Category.UpdateCategoryDto;
 import com.example.tuonlineclothingstore.services.category.ICategoryService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/Api/Category")
+@RequestMapping("/api/category")
 public class CategoryController {
     @Autowired
     ICategoryService iCategoryService;
 
-
+    private final int size = 10;
+    private final String sort = "asc";
+    private final String column = "name";
     @GetMapping("")
     @ApiOperation(value = "Lấy tất cả category")
-    public ResponseEntity<List<CategoryDto>> getAllCategories() {
-        List<CategoryDto> listCategory = iCategoryService.getAllCategories();
-        if (listCategory.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(listCategory, HttpStatus.OK);
+    public ResponseEntity<Page<CategoryDto>> getAllUsers(@RequestParam(defaultValue = "") String searchText,
+                                                     @RequestParam(defaultValue = "0") int page) {
+        return new ResponseEntity<>(iCategoryService.filter(searchText, page, size, sort, column), HttpStatus.OK);
     }
-//    @GetMapping("/pagination")
-//    public ResponseEntity<List<CategoryDto>> getAllCategoriesPagination() {
-//        List<CategoryDto> listCategory = iCategoryService.getAllPagingCategories();
-//        if (listCategory.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        }
-//        return new ResponseEntity<>(listCategory, HttpStatus.OK);
-//    }
 
     @GetMapping("/{id}")
     @ApiOperation(value = "lấy category theo id")
     public ResponseEntity<CategoryDto> getCategoryById(@PathVariable("id") long id) {
-        CategoryDto category = iCategoryService.getCategoryById(id);
-        return new ResponseEntity<>(category, HttpStatus.OK);
+        return new ResponseEntity<>(iCategoryService.getCategoryById(id), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Tạo mới category")
     @PostMapping("/add")
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
-        CategoryDto savedCategory = iCategoryService.createCategory(categoryDto);
-        return new ResponseEntity<>(savedCategory, HttpStatus.CREATED);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody CreateCategoryDto createCategoryDto) {
+        return new ResponseEntity<>(iCategoryService.createCategory(createCategoryDto), HttpStatus.CREATED);
     }
 
-//    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<CategoryDto> patchCategory(@PathVariable("id") Long categoryId,
-//                                                     @RequestBody Map<Object, Object> categoryDto) {
-//        CategoryDto updatedCategory = iCategoryService.patchCategory(categoryId , categoryDto);
-//        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
-//    }
-
     @ApiOperation(value = "Cập nhật lại category")
-    @PatchMapping(value = "/update/{id}")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable("id") Long categoryId,
-                                                     @RequestBody CategoryDto categoryDto) throws NoSuchFieldException, IllegalAccessException {
-        CategoryDto updatedCategory = iCategoryService.updateCategory(categoryId , categoryDto);
+    @PutMapping(value = "/update/{categoryId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long categoryId,
+                                                     @RequestBody UpdateCategoryDto updateCategoryDto){
+        CategoryDto updatedCategory = iCategoryService.updateCategory(categoryId , updateCategoryDto);
         return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Xóa category theo id")
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteCategory(@PathVariable("id") Long categoryId){
-        iCategoryService.deleteCategory(categoryId);
-        return new ResponseEntity<>("Category successfully deleted !!", HttpStatus.OK);
-    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping(value = "/change-status/{categoryId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId){
 
-    @ApiOperation(value = "Tìm kiếm category theo tên")
-    @GetMapping("/search/{name}")
-    public ResponseEntity<List<CategoryDto>> searchByName(@PathVariable("name") String name){
-        List<CategoryDto> categoryDtos = iCategoryService.searchByName(name);
-        return new ResponseEntity<>(categoryDtos, HttpStatus.OK);
+        CategoryDto categoryDto = iCategoryService.getCategoryById(categoryId);
+        iCategoryService.changeStatus(categoryId);
+        return new ResponseEntity<>(String.format("Category đã được thay đổi trạng thái từ %s thành %s",
+                categoryDto.getIsDeleted(), !categoryDto.getIsDeleted()), HttpStatus.OK);
     }
 }
 

@@ -1,29 +1,24 @@
 package com.example.tuonlineclothingstore.services.category;
 
-import com.example.tuonlineclothingstore.dtos.CategoryDto;
-import com.example.tuonlineclothingstore.dtos.CategoryPagination;
+import com.example.tuonlineclothingstore.dtos.Category.CreateCategoryDto;
+import com.example.tuonlineclothingstore.dtos.Category.CategoryDto;
+import com.example.tuonlineclothingstore.dtos.Category.UpdateCategoryDto;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.Map;
 
 public interface ICategoryService {
 
-    //    public CategoryServiceImpl(CategoryRepository categoryRepository){
-//        this.categoryRepository = categoryRepository;
-//    }
-    List<CategoryDto> getAllCategories();
-
-    CategoryPagination getAllPagingCategories(int pageNo, int pageSize, String sortBy, String sortDir);
+    Page<CategoryDto> filter(String search, int page, int size,
+                         String sort, String column);
 
     CategoryDto getCategoryById(Long categoryId);
 
-    CategoryDto createCategory(CategoryDto categoryDto);
+    CategoryDto createCategory(CreateCategoryDto categoryDto);
 
     CategoryDto patchCategory(Long id, Map<Object, Object> categoryDto);
 
-    CategoryDto updateCategory(Long id, CategoryDto categoryDto) throws NoSuchFieldException, IllegalAccessException;
+    CategoryDto updateCategory(Long id, UpdateCategoryDto categoryDto);
 
-    void deleteCategory(Long categoryId);
-
-    List<CategoryDto> searchByName(String name);
+    void changeStatus(Long categoryId);
 }

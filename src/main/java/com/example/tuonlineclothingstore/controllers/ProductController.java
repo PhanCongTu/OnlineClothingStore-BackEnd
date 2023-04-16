@@ -1,13 +1,18 @@
 package com.example.tuonlineclothingstore.controllers;
 
 import com.example.tuonlineclothingstore.dtos.*;
-import com.example.tuonlineclothingstore.dtos.ProductDto;
+import com.example.tuonlineclothingstore.dtos.Category.CategoryDto;
+import com.example.tuonlineclothingstore.dtos.Product.CreateProductDto;
+import com.example.tuonlineclothingstore.dtos.Product.ProductDto;
+import com.example.tuonlineclothingstore.dtos.Product.UpdateProductDto;
+import com.example.tuonlineclothingstore.dtos.User.UserDto;
 import com.example.tuonlineclothingstore.services.category.ICategoryService;
 import com.example.tuonlineclothingstore.services.productimage.IProductImageService;
 import com.example.tuonlineclothingstore.services.product.IProductService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +30,15 @@ public class ProductController {
     ICategoryService iCategoryService;
     @Autowired
     IProductImageService iProductImageService;
-
+    private final int size = 10;
+    private final String sort = "asc";
+    private final String column = "productName";
     @GetMapping("")
-    public ResponseEntity<List<ProductDto>> getAllProducts() {
-        List<ProductDto> listProduct = iProductService.getAllProducts();
-        if (listProduct.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(listProduct, HttpStatus.OK);
+    @ApiOperation(value = "Lấy tất cả user")
+    public ResponseEntity<Page<ProductDto>> getAllProducts(@RequestParam(defaultValue = "") String searchText,
+                                                           @RequestParam(defaultValue = "0") long categoryId,
+                                                           @RequestParam(defaultValue = "0") int page) {
+        return new ResponseEntity<>(iProductService.filter(searchText,categoryId, page, size, sort, column), HttpStatus.OK);
     }
     @GetMapping("/best-selling")
     public ResponseEntity<List<ProductDto>> getTop10BestSelling() {
@@ -67,55 +73,30 @@ public class ProductController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
-        CategoryDto categoryDto = iCategoryService.getCategoryById(productDto.getCategory().getId());
-        productDto.setCategory(categoryDto);
-        List<ProductImageDto> images = new ArrayList<>();
-        if(productDto.getProductImages() != null)
-        {
-            images = productDto.getProductImages();
-        }
-        productDto.setProductImages(null);
-        ProductDto savedProduct = iProductService.createProduct(productDto);
-
-        // Add product image into product has been created
-        List<ProductImageDto> newImages = new ArrayList<>();
-        for (ProductImageDto image : images
-        ) {
-            ProductImageDto newOne = iProductImageService.addProductImage(image, savedProduct.getId());
-            newImages.add(newOne);
-        }
-        ProductDto finalProduct = iProductService.getProductById(savedProduct.getId());
-        finalProduct.setProductImages(newImages);
-        return new ResponseEntity<>(finalProduct, HttpStatus.CREATED);
+    public ResponseEntity<ProductDto> createProduct(@RequestBody CreateProductDto productDto) {
+        return new ResponseEntity<>(iProductService.createProduct(productDto), HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/update/{ProductId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductDto> patchProduct(@PathVariable("ProductId") Long ProductId,
-                                                   @RequestBody Map<Object, Object> ProductDto) {
-        ProductDto updatedProduct = iProductService.patchProduct(ProductId, ProductDto);
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-    }
+//    @PatchMapping(value = "/update/{ProductId}")
+//    @PreAuthorize("hasRole('ADMIN')")
+//    public ResponseEntity<ProductDto> patchProduct(@PathVariable("ProductId") Long ProductId,
+//                                                   @RequestBody Map<Object, Object> ProductDto) {
+//        return new ResponseEntity<>(iProductService.patchProduct(ProductId, ProductDto), HttpStatus.OK);
+//    }
 
     @PutMapping(value = "/update/{ProductId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable("ProductId") Long ProductId,
-                                                    @RequestBody ProductDto productDto) {
-        ProductDto updatedProduct = iProductService.updateProduct(ProductId, productDto);
-        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+                                                    @RequestBody UpdateProductDto productDto) {
+        return new ResponseEntity<>(iProductService.updateProduct(ProductId, productDto), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/delete/{ProductId}")
+    @DeleteMapping(value = "/change-status/{ProductId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteProduct(@PathVariable("ProductId") Long ProductId) {
-        iProductService.deleteProduct(ProductId);
-        return new ResponseEntity<>("Product successfully deleted !!", HttpStatus.OK);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<ProductDto>> searchByName(@RequestParam("name") String name) {
-        List<ProductDto> ProductDtos = iProductService.searchByProductName(name);
-        return new ResponseEntity<>(ProductDtos, HttpStatus.OK);
+    public ResponseEntity<String> changeStatus(@PathVariable("ProductId") Long ProductId) {
+        ProductDto productDto = iProductService.getProductById(ProductId);
+        iProductService.changeStatus(ProductId);
+        return new ResponseEntity<>(String.format("Product đã được thay đổi trạng thái từ %s thành %s",
+                productDto.getIsActive(), !productDto.getIsActive()), HttpStatus.OK);
     }
 }

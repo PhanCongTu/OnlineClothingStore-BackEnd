@@ -1,8 +1,7 @@
 package com.example.tuonlineclothingstore.controllers;
 
 import com.example.tuonlineclothingstore.dtos.CartDto;
-import com.example.tuonlineclothingstore.dtos.ProductDto;
-import com.example.tuonlineclothingstore.repositories.CartRepository;
+import com.example.tuonlineclothingstore.dtos.Product.ProductDto;
 import com.example.tuonlineclothingstore.services.cart.ICartService;
 import com.example.tuonlineclothingstore.services.product.IProductService;
 import io.swagger.annotations.ApiOperation;

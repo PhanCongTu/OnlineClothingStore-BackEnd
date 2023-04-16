@@ -1,5 +1,6 @@
 package com.example.tuonlineclothingstore.dtos;
 
+import com.example.tuonlineclothingstore.dtos.Category.CategoryDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
