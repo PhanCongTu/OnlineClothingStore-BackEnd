@@ -1,4 +1,4 @@
-package com.example.tuonlineclothingstore.dtos;
+package com.example.tuonlineclothingstore.dtos.User;
 
 import com.example.tuonlineclothingstore.utils.EnumRole;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -20,17 +21,17 @@ public class UserDto {
 
     private String userName;
 
-    private String password;
-
     private String avatar;
 
     private String phoneNumber;
 
     private String email;
 
-    private List<String> roles;
-
     private Boolean isActive;
 
-//    private List<CartDto> carts;
+    private Date createAt;
+
+    private Date updateAt;
+
+    private List<String> roles;
 }

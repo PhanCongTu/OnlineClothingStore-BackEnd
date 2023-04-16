@@ -1,5 +1,6 @@
 package com.example.tuonlineclothingstore.dtos;
 
+import com.example.tuonlineclothingstore.dtos.User.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

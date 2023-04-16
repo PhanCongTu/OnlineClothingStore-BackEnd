@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/Api/Product")
+@RequestMapping("/api/product")
 public class ProductController {
     @Autowired
     IProductService iProductService;
@@ -65,6 +66,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
         CategoryDto categoryDto = iCategoryService.getCategoryById(productDto.getCategory().getId());
         productDto.setCategory(categoryDto);
@@ -89,6 +91,7 @@ public class ProductController {
     }
 
     @PatchMapping(value = "/update/{ProductId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductDto> patchProduct(@PathVariable("ProductId") Long ProductId,
                                                    @RequestBody Map<Object, Object> ProductDto) {
         ProductDto updatedProduct = iProductService.patchProduct(ProductId, ProductDto);
@@ -96,6 +99,7 @@ public class ProductController {
     }
 
     @PutMapping(value = "/update/{ProductId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable("ProductId") Long ProductId,
                                                     @RequestBody ProductDto productDto) {
         ProductDto updatedProduct = iProductService.updateProduct(ProductId, productDto);
@@ -103,6 +107,7 @@ public class ProductController {
     }
 
     @DeleteMapping(value = "/delete/{ProductId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteProduct(@PathVariable("ProductId") Long ProductId) {
         iProductService.deleteProduct(ProductId);
         return new ResponseEntity<>("Product successfully deleted !!", HttpStatus.OK);

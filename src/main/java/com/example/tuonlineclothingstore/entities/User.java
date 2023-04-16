@@ -1,5 +1,6 @@
 package com.example.tuonlineclothingstore.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Data
+@RequiredArgsConstructor
 @Table(name = "user")
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -27,6 +29,7 @@ public class User implements Serializable {
     private String userName;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
     private String avatar;
@@ -62,4 +65,12 @@ public class User implements Serializable {
     )
     private List<Order> orders;
 
+    public User(String name, String userName, String password, String phoneNumber, String email, List<String> roles) {
+        this.name = name;
+        this.userName = userName;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.roles = roles;
+    }
 }

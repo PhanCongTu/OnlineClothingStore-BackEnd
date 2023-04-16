@@ -1,101 +1,135 @@
 package com.example.tuonlineclothingstore.controllers;
 
-import com.example.tuonlineclothingstore.dtos.Login;
-import com.example.tuonlineclothingstore.dtos.SignUp;
-import com.example.tuonlineclothingstore.dtos.UserDto;
-import com.example.tuonlineclothingstore.exceptions.NotFoundException;
-import com.example.tuonlineclothingstore.repositories.UserRepository;
+import com.example.tuonlineclothingstore.dtos.User.ChangePasswordDto;
+import com.example.tuonlineclothingstore.dtos.User.UpdateUserDto;
+import com.example.tuonlineclothingstore.dtos.User.UserDto;
+import com.example.tuonlineclothingstore.entities.User;
 import com.example.tuonlineclothingstore.services.user.IUserService;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.List;
+import java.security.Principal;
 
 @RestController
-@RequestMapping("/Api/User")
+    @RequestMapping("/api/user")
 public class UserController{
-    @Autowired
     IUserService iUserService;
+    public UserController(IUserService iUserService) {
+        this.iUserService = iUserService;
+    }
+    private final int size = 10;
+    private final String sort = "asc";
+    private final String column = "name";
 
+    /***
+     * @Authorize : ADMIN
+     * @param searchText : Từ khóa muốn tìm kiếm (Tên user hoặc email)
+     * @param page : Số thự tự của trang
+     * @return : Trả về 1 Page các user theo từ khóa
+     *
+     *  Nếu không chuyền vào searchText thì mặc địch sẽ tìm tất cả
+     *  Nếu không chuyền vào page thì sẽ lấy trang đầu tiên
+     */
     @GetMapping("")
     @ApiOperation(value = "Lấy tất cả user")
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-        List<UserDto> listUser = iUserService.getAllUsers();
-        if (listUser.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(listUser, HttpStatus.OK);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<UserDto>> getAllUsers(@RequestParam(defaultValue = "") String searchText,
+                                                  @RequestParam(defaultValue = "0") int page) {
+        return new ResponseEntity<>(iUserService.filter(searchText, page, size, sort, column), HttpStatus.OK);
     }
-//    @GetMapping("/pagination")
-//    public ResponseEntity<List<UserDto>> getAllUsersPagination() {
-//        List<UserDto> listUser = iUserService.getAllPagingUsers();
-//        if (listUser.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        }
-//        return new ResponseEntity<>(listUser, HttpStatus.OK);
-//    }
 
-    @GetMapping("/{id}")
+    /***
+     * @Authorize: ADMIN
+     * @param userId : ID của user
+     * @return : Trả về thông tin của user đó
+     */
+    @GetMapping("/{userId}")
     @ApiOperation(value = "Lấy user theo id")
-    public ResponseEntity<UserDto> getUserById(@PathVariable("id") long id) {
-        UserDto User = iUserService.getUserById(id);
-        return new ResponseEntity<>(User, HttpStatus.OK);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserDto> getUserById(@PathVariable long userId) {
+        return new ResponseEntity<>(iUserService.getUserById(userId), HttpStatus.OK);
     }
 
+    /***
+     * @Authorize: ADMIN, USER
+     * @param username: truyền vào username muốn kiểm tra
+     * @return :    true: đã tồn tại
+     *              false: chưa tồn tại
+     */
     @GetMapping("/check/{username}")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @ApiOperation(value = "Kiểm tra Username đã tồn tại hay chưa")
-    public ResponseEntity<Boolean> checkExistByUsername(@PathVariable("username") String username) {
-        Boolean check = iUserService.checkExistByUsername(username.trim());
-        return new ResponseEntity<>(check, HttpStatus.OK);
+    public ResponseEntity<Boolean> checkExistByUsername(@PathVariable String username) {
+        return new ResponseEntity<>(iUserService.checkExistByUsername(username.trim()), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Tạo mới user")
-    @PostMapping("/signup")
-    public ResponseEntity<UserDto> createUser(@RequestBody @Valid SignUp signUp) {
-        UserDto savedUser = iUserService.createUser(signUp);
-        return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
-    }
-
-//    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<UserDto> patchUser(@PathVariable("id") Long UserId,
-//                                                     @RequestBody Map<Object, Object> UserDto) {
-//        UserDto updatedUser = iUserService.patchUser(UserId , UserDto);
-//        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-//    }
-
+    /***
+     * @Authorize: ADMIN, USER
+     * @param userId : ID của user muốn cập nhật
+     * @param UserDto: Các thông tin muốn cập nhật (Không bao gồm username và password)
+     * @return: Trả về thông tin mới của user
+     */
     @ApiOperation(value = "Cập nhật lại user")
-    @PatchMapping(value = "/update/{userId}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("userId") Long UserId,
-                                                      @RequestBody UserDto UserDto) throws NoSuchFieldException, IllegalAccessException {
-        UserDto updatedUser = iUserService.updateUser(UserId , UserDto);
+    @PutMapping(value = "/update/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<UserDto> update(@PathVariable Long userId,
+                                              @RequestBody UpdateUserDto UserDto){
+        UserDto updatedUser = iUserService.updateUser(userId , UserDto);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 
+    /***
+     * @Authorize: ADMIN, USER (Ai cũng có thể đổi được mật khẩu của chính mình nhưng phải đăng nhập)
+     * @param changePasswordDto : Truyền vào password cũ để check và password mới
+     * @param principal : Chỉ thay đổi được password của người đang đăng nhập
+     * @return : Thông báo thành công
+     */
+    @ApiOperation(value = "Đổi mật khẩu user")
+    @PutMapping(value = "/change-password")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordDto changePasswordDto,
+                                          Principal principal){
+        iUserService.changePassword(changePasswordDto, principal);
+        return new ResponseEntity<>("Password updated successfully", HttpStatus.OK);
+    }
+
+    /***
+     * @Authorize: ADMIN
+     * @param userId : ID của user bị thay đổi trạng thái
+     * @return : Trả về trạng thái mới của user
+     *              true -> false
+     *              false -> true
+     */
     @ApiOperation(value = "Đổi trạng thái của User")
     @PutMapping(value = "/change-status/{userId}")
-    public ResponseEntity<String> changeStatusUser(@PathVariable("userId") Long userId){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> changeStatusUser(@PathVariable Long userId){
         UserDto userDto = iUserService.getUserById(userId);
         iUserService.changeStatusUser(userId);
         return new ResponseEntity<>(String.format("User đã được thay đổi trạng thái từ %s thành %s",
                 userDto.getIsActive(), !userDto.getIsActive()), HttpStatus.OK);
     }
+
+    /***
+     * @Authorize: ADMIN
+     * @param userId: ID của user bị xóa
+     * @return : Thông báo xóa thành công
+     *
+     *  HẠN CHẾ tối đa việc sử dụng chức năng này
+     *  Thay vào đó chỉ cần đổi trạng thái của user bằng false
+     *  Vì sẽ làm mất dữ liệu liên quan (Cart, Order)
+     *
+     */
     @ApiOperation(value = "Xóa User khỏi hệ thống")
     @DeleteMapping(value = "/delete/{userId}")
-    public ResponseEntity<String> DeleteUser(@PathVariable("userId") Long userId){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> DeleteUser(@PathVariable Long userId){
         iUserService.deleteUser(userId);
         return new ResponseEntity<>(String.format("User có id là %s đã bị xóa", userId), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Đăng nhập")
-    @PostMapping(value = "/login")
-    public ResponseEntity<UserDto> login(@RequestBody Login login){
-        UserDto userDto =iUserService.getUserByUserNameAndPassword(login.getUserName(), login.getPassword());
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
-    }
 }

@@ -3,7 +3,7 @@ cloudinary:
     api-secret: TmeGg3OGrfTjPGmY4Wj9cBnNYy8
     cloud-name: dzjoxccho
 server:
-    port: 8080
+    port: 8282
 spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
@@ -15,7 +15,7 @@ spring:
             FAIL_ON_EMPTY_BEANS: false
     jpa:
         hibernate:
-            ddl-auto: update
+            ddl-auto: create-drop
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -24,3 +24,5 @@ spring:
     mvc:
         pathmatch:
             matching-strategy: ANT_PATH_MATCHER
+jwt:
+    secret: K1LqzK6eeD0g0BfgOg7SKs2K1LqzK6eeD0g0BfgOg7SK1LqzK6eeD0g0BfgOg7S

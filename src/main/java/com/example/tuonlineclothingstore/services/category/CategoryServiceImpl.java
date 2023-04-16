@@ -5,7 +5,6 @@ import com.example.tuonlineclothingstore.dtos.CategoryPagination;
 import com.example.tuonlineclothingstore.entities.Category;
 import com.example.tuonlineclothingstore.exceptions.NotFoundException;
 import com.example.tuonlineclothingstore.repositories.CategoryRepository;
-import com.example.tuonlineclothingstore.utils.MapperUtils;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -81,12 +80,11 @@ public class CategoryServiceImpl implements ICategoryService {
     @Override
     public CategoryDto createCategory(CategoryDto categoryDto) {
         Category category = modelMapper.map(categoryDto, Category.class);
-        if (category.getIsDeleted()==null) category.setIsDeleted(false);
+        if (category.getIsDeleted() == null) category.setIsDeleted(false);
         Category savedCategory = categoryRepository.save(category);
         CategoryDto saveCategoryDto = modelMapper.map(savedCategory, CategoryDto.class);
         return saveCategoryDto;
     }
-
 
 
     // Cập nhật lại category (chỉ cập nhật những thuộc tính muốn thay đổi)
@@ -114,10 +112,7 @@ public class CategoryServiceImpl implements ICategoryService {
         Category existingCategory = categoryRepository.findById(id).orElse(null);
         if (existingCategory == null) throw new NotFoundException("Unable to update category!");
 
-//        BeanUtils.copyProperties(categoryDto, existingCategory);
-
-        MapperUtils.toDto(categoryDto,existingCategory);
-
+        modelMapper.map(categoryDto, existingCategory);
         existingCategory.setUpdateAt(new Date(new java.util.Date().getTime()));
         Category updatedCategory = categoryRepository.save(existingCategory);
         CategoryDto updatedCategoryDto = modelMapper.map(updatedCategory, CategoryDto.class);

@@ -3,7 +3,7 @@ package com.example.tuonlineclothingstore.controllers;
 import com.example.tuonlineclothingstore.dtos.CartDto;
 import com.example.tuonlineclothingstore.dtos.OrderDto;
 import com.example.tuonlineclothingstore.dtos.OrderItemDto;
-import com.example.tuonlineclothingstore.dtos.UserDto;
+import com.example.tuonlineclothingstore.dtos.User.UserDto;
 import com.example.tuonlineclothingstore.entities.Order;
 import com.example.tuonlineclothingstore.entities.OrderItem;
 import com.example.tuonlineclothingstore.entities.Product;
