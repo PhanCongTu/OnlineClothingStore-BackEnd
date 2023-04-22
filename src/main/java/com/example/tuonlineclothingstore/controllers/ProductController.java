@@ -23,6 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/product")
+@CrossOrigin("http://localhost:3000")
 public class ProductController {
     @Autowired
     IProductService iProductService;
@@ -30,14 +31,18 @@ public class ProductController {
     ICategoryService iCategoryService;
     @Autowired
     IProductImageService iProductImageService;
-    private final int size = 10;
-    private final String sort = "asc";
-    private final String column = "productName";
+//    private final int size = 1;
+
+    private final String column = "price";
     @GetMapping("")
-    @ApiOperation(value = "Lấy tất cả user")
     public ResponseEntity<Page<ProductDto>> getAllProducts(@RequestParam(defaultValue = "") String searchText,
                                                            @RequestParam(defaultValue = "0") long categoryId,
-                                                           @RequestParam(defaultValue = "0") int page) {
+                                                           @RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "12") int size,
+                                                           @RequestParam(defaultValue = "0") int sortType
+    ) {
+        String sort = "asc";
+        if (sortType!=0) sort = "desc";
         return new ResponseEntity<>(iProductService.filter(searchText,categoryId, page, size, sort, column), HttpStatus.OK);
     }
     @GetMapping("/best-selling")
@@ -77,12 +82,6 @@ public class ProductController {
         return new ResponseEntity<>(iProductService.createProduct(productDto), HttpStatus.CREATED);
     }
 
-//    @PatchMapping(value = "/update/{ProductId}")
-//    @PreAuthorize("hasRole('ADMIN')")
-//    public ResponseEntity<ProductDto> patchProduct(@PathVariable("ProductId") Long ProductId,
-//                                                   @RequestBody Map<Object, Object> ProductDto) {
-//        return new ResponseEntity<>(iProductService.patchProduct(ProductId, ProductDto), HttpStatus.OK);
-//    }
 
     @PutMapping(value = "/update/{ProductId}")
     @PreAuthorize("hasRole('ADMIN')")

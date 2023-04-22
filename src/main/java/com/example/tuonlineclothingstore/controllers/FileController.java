@@ -28,6 +28,7 @@ import java.util.UUID;
 @RestController
 //@ApiPrefixController("files")
 @RequestMapping("/files")
+@CrossOrigin("http://localhost:3000")
 public class FileController {
     @Autowired
     private Cloudinary cloudinary;

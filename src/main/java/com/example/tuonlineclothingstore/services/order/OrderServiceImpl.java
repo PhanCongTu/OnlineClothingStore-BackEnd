@@ -1,6 +1,6 @@
 package com.example.tuonlineclothingstore.services.order;
 
-import com.example.tuonlineclothingstore.dtos.OrderDto;
+import com.example.tuonlineclothingstore.dtos.Order.OrderDto;
 import com.example.tuonlineclothingstore.entities.Order;
 import com.example.tuonlineclothingstore.repositories.OrderRepository;
 import com.example.tuonlineclothingstore.services.cart.ICartService;
@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ public class OrderServiceImpl implements IOrderService {
         List<Order> orders = orderRepository.findAllByUserId(userId);
         return orders.stream()
                 .map((order) -> (modelMapper.map(order, OrderDto.class)))
+                .sorted(Comparator.comparing((OrderDto::getCreateAt)).reversed())
                 .collect(Collectors.toList());
     }
 

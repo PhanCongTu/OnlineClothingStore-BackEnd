@@ -20,6 +20,9 @@ public class OrderItem implements Serializable {
     @Column(nullable = false)
     private int quantity;
 
+    @Column(nullable = false)
+    private String size;
+
     @Column(nullable = false, updatable = false)
     private Date createAt = new Date(new java.util.Date().getTime());
 

@@ -2,6 +2,8 @@ package com.example.tuonlineclothingstore.dtos.Product;
 
 import com.example.tuonlineclothingstore.dtos.Category.CategoryDto;
 import com.example.tuonlineclothingstore.dtos.ProductImageDto;
+import com.example.tuonlineclothingstore.dtos.ProductSizeDto;
+import com.example.tuonlineclothingstore.entities.ProductSize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,4 +25,5 @@ public class ProductDto {
     private Boolean isActive = true;
     private CategoryDto category;
     private List<ProductImageDto> productImages;
+    private List<ProductSizeDto> productSizes;
 }

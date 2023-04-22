@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.*;
-import java.util.function.Function;
 
 @Service
 @AllArgsConstructor
@@ -62,8 +61,8 @@ public class UserServiceImpl implements IUserService {
 
     // Cập nhật lại User (cập nhật lại toàn bộ các thuộc tính)
     @Override
-    public UserDto updateUser(Long userId, UpdateUserDto userDto) {
-        User existingUser = userRepository.findById(userId).orElse(null);
+    public UserDto updateUser(Principal principal, UpdateUserDto userDto) {
+        User existingUser = userRepository.findByUserName(principal.getName());
         if (existingUser == null) throw new NotFoundException("Unable to update User!");
         // Nếu mã không giống mã cũ thì kiểm tra mã mới đã tồn tại trong database hay chưa
         if (!existingUser.getEmail().equals(userDto.getEmail())
@@ -92,6 +91,13 @@ public class UserServiceImpl implements IUserService {
         if (!user.getIsActive()) throw new NotFoundException("User has been deleted !");
         return modelMapper.map(user, UserDto.class);
     }
+    @Override
+    public UserDto getUserByUserName(String userName) {
+        User user = userRepository.findByUserName(userName);
+        if (user == null) throw new NotFoundException("Wrong username or password !!");
+        if (!user.getIsActive()) throw new NotFoundException("User has been deleted !");
+        return modelMapper.map(user, UserDto.class);
+    }
 
     @Override
     public void deleteUser(Long userId) {
@@ -115,5 +121,9 @@ public class UserServiceImpl implements IUserService {
         if (!existingUser.isPresent()) throw new NotFoundException("User not found!");
         existingUser.get().getRoles().add(EnumRole.ROLE_ADMIN.name());
         userRepository.save(existingUser.get());
+    }
+    @Override
+    public UserDto getMyInf(Principal principal){
+        return modelMapper.map(userRepository.findByUserName(principal.getName()), UserDto.class);
     }
 }

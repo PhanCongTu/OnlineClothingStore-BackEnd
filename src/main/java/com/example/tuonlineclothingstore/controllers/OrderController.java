@@ -1,7 +1,8 @@
 package com.example.tuonlineclothingstore.controllers;
 
 import com.example.tuonlineclothingstore.dtos.CartDto;
-import com.example.tuonlineclothingstore.dtos.OrderDto;
+import com.example.tuonlineclothingstore.dtos.Order.AddOrderDto;
+import com.example.tuonlineclothingstore.dtos.Order.OrderDto;
 import com.example.tuonlineclothingstore.dtos.OrderItemDto;
 import com.example.tuonlineclothingstore.dtos.User.UserDto;
 import com.example.tuonlineclothingstore.entities.Order;
@@ -15,13 +16,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Api/Order")
+@RequestMapping("/api/order")
+@CrossOrigin("*")
 public class OrderController {
 
     @Autowired
@@ -42,62 +46,85 @@ public class OrderController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<List<OrderDto>> getAllOrder(@RequestParam Long userId) {
+    /***
+     *  Controller dành cho admin để xem order của user
+     * @param userId : ID của user
+     * @return : Danh sách các order
+     */
+    @GetMapping("/user/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<OrderDto>> getAllOrder(@PathVariable Long userId) {
         List<OrderDto> orderDtos = iOrderService.getAllOrder(userId);
+        return new ResponseEntity<>(orderDtos, HttpStatus.OK);
+    }
+
+    /***
+     *  Controller dành cho user để lấy order của mình
+     * @param principal : lấy từ token
+     * @return : Danh sách các order
+     */
+    @GetMapping("/my-order")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<OrderDto>> getMyOrder(Principal principal) {
+        UserDto userDto = iUserService.getUserByUserName(principal.getName());
+        List<OrderDto> orderDtos = iOrderService.getAllOrder(userDto.getId());
         return new ResponseEntity<>(orderDtos, HttpStatus.OK);
     }
 
     /***]
      * @author : Tu
-     * @param userId : Truyền vào id của người đặt
-     * @param address : Truyền vào địa chỉ
-     * @param phoneNumber: Truyền vào số điện thoại
-     * @param idCarts: Truyền vào list<Long> id của các cart muốn order
-     *               , nếu k truyền thì mặc định là order tất cả trong cart
+     * @param principal : lấy từ token (Chỉ user mới được đặt hàng)
+     * @param addOrderDto : Truyền vào thông tin cần thiết
      * @return : Thông tin về order mơi
      */
     @PostMapping("/add")
-    public ResponseEntity<OrderDto> addToOrder(@RequestParam("userId") Long userId,
-                                               @RequestParam("address") String address,
-                                               @RequestParam("phoneNumber") String phoneNumber,
-                                               @RequestParam(value = "idCarts" ,required = false, defaultValue = "") List<Long> idCarts ) {
-        OrderDto orderDto = new OrderDto();
-        double total = 0;
-        List<CartDto> cartDtos = new ArrayList<>();
+    public ResponseEntity<OrderDto> addToOrder(Principal principal,
+                                               @RequestBody AddOrderDto addOrderDto) {
+
+         String address = addOrderDto.getAddress();
+
+         String phoneNumber =addOrderDto.getPhoneNumber();
+
+         String note =addOrderDto.getNote();
+
+         List<Long> idCarts = addOrderDto.getIdCarts();
+
+        UserDto loginedUser = iUserService.getUserByUserName(principal.getName());
+        List<CartDto> cartsWantToBuy = new ArrayList<>();
+        
+        double totalMoney = 0;
+
+
         if (idCarts.isEmpty()) {
             System.out.println("List empty");
-            cartDtos = iCartService.getAllCartByUserId(userId);
+            cartsWantToBuy = iCartService.getAllCartByUserId(loginedUser.getId());
         } else {
             System.out.println("List" + idCarts);
             for (Long id : idCarts
             ) {
                 CartDto cartDto = iCartService.getCartById(id);
                 if (cartDto != null) {
-                    cartDtos.add(cartDto);
+                    cartsWantToBuy.add(cartDto);
                 }
             }
         }
-        for (CartDto cartDto: cartDtos
-             ) {
-            total += cartDto.getProduct().getPrice()*cartDto.getQuantity();
+
+        for (CartDto cartDto: cartsWantToBuy) {
+            totalMoney += cartDto.getProduct().getPrice()*cartDto.getQuantity();
         }
 
-        UserDto userDto = iUserService.getUserById(userId);
-        List<OrderItemDto> orderItemDtos = new ArrayList<>();
 
-
-        orderDto.setUser(userDto);
-        orderDto.setTotal(total);
+        OrderDto orderDto = new OrderDto();
+        orderDto.setUser(loginedUser);
+        orderDto.setTotal(totalMoney);
         orderDto.setAddress(address);
         orderDto.setPhoneNumber(phoneNumber);
-
-
+        orderDto.setNote(note);
         OrderDto newOrder = iOrderService.newOrder(orderDto);
 
-        for (CartDto cartDto : cartDtos
+        List<OrderItemDto> orderItemDtos = new ArrayList<>();
+        for (CartDto cartDto : cartsWantToBuy
         ) {
-            total += cartDto.getQuantity() * cartDto.getProduct().getPrice();
             OrderItem newOne = modelMapper.map(cartDto, OrderItem.class);
             newOne.setOrder(modelMapper.map(newOrder, Order.class));
             newOne.setProduct(modelMapper.map(cartDto.getProduct(), Product.class));

@@ -1,6 +1,6 @@
 package com.example.tuonlineclothingstore.services.order;
 
-import com.example.tuonlineclothingstore.dtos.OrderDto;
+import com.example.tuonlineclothingstore.dtos.Order.OrderDto;
 
 import java.util.List;
 

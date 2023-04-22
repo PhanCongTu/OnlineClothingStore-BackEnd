@@ -23,15 +23,19 @@ public interface IUserService {
     UserDto createUser(SignUp signUp);
 
     // Cập nhật lại User (cập nhật lại toàn bộ các thuộc tính)
-    UserDto updateUser(Long id, UpdateUserDto UserDto);
+    UserDto updateUser(Principal principal, UpdateUserDto UserDto);
 
     void changeStatusUser(Long UserId);
 
     UserDto getUserByUserNameAndPassword(String userName, String password);
+
+    UserDto getUserByUserName(String userName);
 
     void deleteUser(Long userId);
 
     void changePassword(ChangePasswordDto userDto, Principal principal);
 
     void upgradeRole(Long userId);
+
+    UserDto getMyInf(Principal principal);
 }

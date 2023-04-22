@@ -5,6 +5,7 @@ import com.example.tuonlineclothingstore.entities.Product;
 import com.example.tuonlineclothingstore.entities.ProductImage;
 import com.example.tuonlineclothingstore.exceptions.NotFoundException;
 import com.example.tuonlineclothingstore.repositories.ProductImageRepository;
+import com.example.tuonlineclothingstore.services.product.IProductService;
 import com.example.tuonlineclothingstore.services.product.ProductServiceImpl;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;

@@ -27,7 +27,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class ProductServiceImpl implements IProductService {
     private final ProductRepository productRepository;
 
-    ICategoryService iCategoryService;
+    private final ICategoryService iCategoryService;
     private ModelMapper modelMapper;
 
     @Override

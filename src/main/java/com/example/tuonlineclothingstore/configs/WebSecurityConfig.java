@@ -50,6 +50,7 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.cors();
         http.csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers("/swagger-ui/**").permitAll()
@@ -57,6 +58,7 @@ public class WebSecurityConfig {
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/v2/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/uploads/**").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(HttpMethod.POST, pattern.toArray(new String[0])).permitAll()
                 .anyRequest().authenticated().and()

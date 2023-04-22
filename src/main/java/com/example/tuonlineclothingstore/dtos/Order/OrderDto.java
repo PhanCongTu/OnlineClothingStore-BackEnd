@@ -1,11 +1,13 @@
-package com.example.tuonlineclothingstore.dtos;
+package com.example.tuonlineclothingstore.dtos.Order;
 
+import com.example.tuonlineclothingstore.dtos.OrderItemDto;
 import com.example.tuonlineclothingstore.dtos.User.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -19,11 +21,17 @@ public class OrderDto {
 
     private String phoneNumber;
 
+    private String note;
+
     private int status;
 
     private double total;
 
+    private Date createAt;
+
     private UserDto user;
 
     private List<OrderItemDto> orderItems;
+
+
 }

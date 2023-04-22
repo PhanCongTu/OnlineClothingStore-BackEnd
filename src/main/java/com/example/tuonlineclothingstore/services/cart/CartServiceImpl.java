@@ -44,12 +44,9 @@ public class CartServiceImpl implements ICartService {
         int plus = cartDto.getQuantity();
         for (CartDto cart: carts
              ) {
-            if (cart.getProduct().getId() == cartDto.getProduct().getId()){
+            if (cart.getProduct().getId() == cartDto.getProduct().getId() && cart.getSize().trim().equals(cartDto.getSize().trim())){
                 cartDto = cart ;
                 cartDto.setQuantity(cart.getQuantity() + plus);
-//                Cart newCart = modelMapper.map(cart, Cart.class);
-//                newCart.setUser(modelMapper.map(iUserService.getUserById(userId), User.class));
-//                cartRepository.save(modelMapper.map(newCart, Cart.class));
                 break;
             }
         }

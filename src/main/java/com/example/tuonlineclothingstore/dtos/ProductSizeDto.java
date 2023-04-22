@@ -1,7 +1,5 @@
 package com.example.tuonlineclothingstore.dtos;
 
-
-import com.example.tuonlineclothingstore.dtos.Product.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,12 +9,9 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItemDto {
+public class ProductSizeDto {
+
     private long id;
 
-    private int quantity;
-
     private String size;
-
-    private ProductDto product;
 }

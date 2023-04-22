@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @RestController
-    @RequestMapping("/api/user")
+@RequestMapping("/api/user")
+@CrossOrigin("*")
 public class UserController{
     IUserService iUserService;
     public UserController(IUserService iUserService) {
@@ -40,6 +41,13 @@ public class UserController{
     public ResponseEntity<Page<UserDto>> getAllUsers(@RequestParam(defaultValue = "") String searchText,
                                                   @RequestParam(defaultValue = "0") int page) {
         return new ResponseEntity<>(iUserService.filter(searchText, page, size, sort, column), HttpStatus.OK);
+    }
+
+    @GetMapping("/me")
+    @ApiOperation(value = "Lấy thông tin cá nhân")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<UserDto> getMyInformation(Principal principal) {
+        return new ResponseEntity<>(iUserService.getMyInf(principal), HttpStatus.OK);
     }
 
     /***
@@ -69,16 +77,15 @@ public class UserController{
 
     /***
      * @Authorize: ADMIN, USER
-     * @param userId : ID của user muốn cập nhật
      * @param UserDto: Các thông tin muốn cập nhật (Không bao gồm username và password)
      * @return: Trả về thông tin mới của user
      */
     @ApiOperation(value = "Cập nhật lại user")
-    @PutMapping(value = "/update/{userId}")
+    @PutMapping(value = "/update")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<UserDto> update(@PathVariable Long userId,
-                                              @RequestBody UpdateUserDto UserDto){
-        UserDto updatedUser = iUserService.updateUser(userId , UserDto);
+    public ResponseEntity<UserDto> update(@RequestBody UpdateUserDto UserDto,
+                                          Principal principal){
+        UserDto updatedUser = iUserService.updateUser(principal , UserDto);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 

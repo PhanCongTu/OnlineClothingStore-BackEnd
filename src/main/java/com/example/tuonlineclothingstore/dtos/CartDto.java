@@ -13,5 +13,7 @@ public class CartDto {
 
     private int quantity;
 
+    private String size;
+
     private ProductDto product;
 }
