@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,11 +22,13 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     public List<OrderDto> getAllOrder(Long userId){
-        List<Order> orders = orderRepository.findAllByUserId(userId);
-        return orders.stream()
-                .map((order) -> (modelMapper.map(order, OrderDto.class)))
-                .sorted(Comparator.comparing((OrderDto::getCreateAt)).reversed())
-                .collect(Collectors.toList());
+        List<Order> orders = orderRepository.findAllByUserIdOrderByCreateAtDesc(userId);
+        List<OrderDto> orderDtos = new ArrayList<>();
+        for (Order oder: orders
+             ) {
+            orderDtos.add(modelMapper.map(oder, OrderDto.class));
+        }
+        return orderDtos;
     }
 
     @Override

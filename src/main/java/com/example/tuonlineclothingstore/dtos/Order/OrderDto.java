@@ -23,7 +23,7 @@ public class OrderDto {
 
     private String note;
 
-    private int status;
+    private String status;
 
     private double total;
 

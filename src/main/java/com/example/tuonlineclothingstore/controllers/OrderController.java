@@ -12,6 +12,7 @@ import com.example.tuonlineclothingstore.services.cart.ICartService;
 import com.example.tuonlineclothingstore.services.orderitem.IOrderItemService;
 import com.example.tuonlineclothingstore.services.order.IOrderService;
 import com.example.tuonlineclothingstore.services.user.IUserService;
+import com.example.tuonlineclothingstore.utils.EnumOrderStatus;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -67,6 +69,7 @@ public class OrderController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<OrderDto>> getMyOrder(Principal principal) {
         UserDto userDto = iUserService.getUserByUserName(principal.getName());
+        System.out.println(userDto);
         List<OrderDto> orderDtos = iOrderService.getAllOrder(userDto.getId());
         return new ResponseEntity<>(orderDtos, HttpStatus.OK);
     }
@@ -119,7 +122,9 @@ public class OrderController {
         orderDto.setTotal(totalMoney);
         orderDto.setAddress(address);
         orderDto.setPhoneNumber(phoneNumber);
+        orderDto.setStatus(EnumOrderStatus.CHO_XAC_NHAN.name());
         orderDto.setNote(note);
+        orderDto.setCreateAt(new Date(new java.util.Date().getTime()));
         OrderDto newOrder = iOrderService.newOrder(orderDto);
 
         List<OrderItemDto> orderItemDtos = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.example.tuonlineclothingstore.entities;
 
+import com.example.tuonlineclothingstore.utils.EnumOrderStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -24,7 +25,7 @@ public class Order implements Serializable {
 
     private String note;
 
-    private int status = 0;
+    private String status;
 
     private double total;
 
