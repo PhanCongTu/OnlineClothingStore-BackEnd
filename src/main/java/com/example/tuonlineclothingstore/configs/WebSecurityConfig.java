@@ -37,7 +37,8 @@ public class WebSecurityConfig {
 
     private final List<String> pattern = Arrays.asList(
             "/api/login/**",
-            "/api/signup/**"
+            "/api/signup/**",
+            "/files/**"
     );
 
 
@@ -59,6 +60,7 @@ public class WebSecurityConfig {
                 .antMatchers("/v2/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/uploads/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/files/**").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(HttpMethod.POST, pattern.toArray(new String[0])).permitAll()
                 .anyRequest().authenticated().and()

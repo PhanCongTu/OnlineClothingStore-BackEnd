@@ -69,7 +69,11 @@ public class UserServiceImpl implements IUserService {
                 && userRepository.existsByEmail(userDto.getEmail())) {
             throw new DuplicateKeyException(String.format("Email đã %s đã tồn tại", userDto.getEmail()));
         }
-        modelMapper.map(userDto, existingUser);
+//        modelMapper.map(userDto, existingUser);
+        existingUser.setName(userDto.getName());
+        existingUser.setEmail(userDto.getEmail());
+        existingUser.setPhoneNumber(userDto.getPhoneNumber());
+        existingUser.setAvatar(userDto.getAvatar());
         existingUser.setUpdateAt(new Date(new java.util.Date().getTime()));
         return modelMapper.map(userRepository.save(existingUser), UserDto.class);
     }
