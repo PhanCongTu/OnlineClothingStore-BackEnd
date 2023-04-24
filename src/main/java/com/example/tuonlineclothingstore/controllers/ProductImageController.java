@@ -20,7 +20,6 @@ public class ProductImageController {
     IProductImageService iProductImageService;
 
     @GetMapping("/product/{productId}")
-    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Lấy tất cả ảnh Product theo Product Id")
     public ResponseEntity<List<ProductImageDto>> getAllProductImages(@PathVariable Long productId) {
         List<ProductImageDto> listImages = iProductImageService.getAllImageByProductId(productId);

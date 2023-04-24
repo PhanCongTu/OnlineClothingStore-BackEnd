@@ -15,18 +15,25 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/category")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("*")
 public class CategoryController {
     @Autowired
     ICategoryService iCategoryService;
 
     private final int size = 10;
-    private final String sort = "asc";
-    private final String column = "name";
+
+    private final String column = "isDeleted";
+
     @GetMapping("")
     @ApiOperation(value = "Lấy tất cả category")
-    public ResponseEntity<Page<CategoryDto>> getAllUsers(@RequestParam(defaultValue = "") String searchText,
-                                                     @RequestParam(defaultValue = "0") int page) {
+        public ResponseEntity<Page<CategoryDto>> getAllCategory(@RequestParam(defaultValue = "") String searchText,
+                                                         @RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "0") int sortType) {
+        System.out.println(searchText);
+        System.out.println(page);
+        System.out.println(sortType);
+        String sort = "asc";
+        if (sortType != 0) sort = "desc";
         return new ResponseEntity<>(iCategoryService.filter(searchText, page, size, sort, column), HttpStatus.OK);
     }
 
@@ -47,15 +54,15 @@ public class CategoryController {
     @PutMapping(value = "/update/{categoryId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long categoryId,
-                                                     @RequestBody UpdateCategoryDto updateCategoryDto){
-        CategoryDto updatedCategory = iCategoryService.updateCategory(categoryId , updateCategoryDto);
+                                                      @RequestBody UpdateCategoryDto updateCategoryDto) {
+        CategoryDto updatedCategory = iCategoryService.updateCategory(categoryId, updateCategoryDto);
         return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Xóa category theo id")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/change-status/{categoryId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId){
+    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
 
         CategoryDto categoryDto = iCategoryService.getCategoryById(categoryId);
         iCategoryService.changeStatus(categoryId);

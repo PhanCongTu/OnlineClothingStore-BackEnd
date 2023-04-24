@@ -35,15 +35,14 @@ public class ProductServiceImpl implements IProductService {
                                    String sort, String column) {
         Pageable pageable = PageUtils.createPageable(page, size, sort, column);
         Page<Product> products;
-        if (categoryId==0) {
-            products = productRepository.findByProductNameContainingIgnoreCase(searchText,pageable);
-        }
-        else {
+        if (categoryId == 0) {
+            products = productRepository.findByProductNameContainingIgnoreCaseAndIsActive(searchText, true, pageable);
+        } else {
             CategoryDto categoryDto = iCategoryService.getCategoryById(categoryId);
-            if (categoryDto==null)
+            if (categoryDto == null)
                 throw new NotFoundException("Cant find category!");
             products = productRepository.
-                    findByProductNameContainingAndCategoryAllIgnoreCase(searchText, modelMapper.map(categoryDto, Category.class), pageable);
+                    findByProductNameContainingAndCategoryAllIgnoreCaseAndIsActive(searchText, modelMapper.map(categoryDto, Category.class),true, pageable);
         }
         return products.map(product -> modelMapper.map(product, ProductDto.class));
     }
@@ -59,13 +58,12 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ProductDto createProduct(CreateProductDto productDto) {
         CategoryDto categoryDto = iCategoryService.getCategoryById(productDto.getCategory().getId());
-        if (categoryDto.getIsDeleted()){
+        if (categoryDto.getIsDeleted()) {
             throw new InvalidException("Category has been deleted !");
         }
         productDto.setCategory(categoryDto);
         return modelMapper.map(productRepository.save(modelMapper.map(productDto, Product.class)), ProductDto.class);
     }
-    
 
 
     // Cập nhật lại Product (chỉ cập nhật những thuộc tính muốn thay đổi)
@@ -120,6 +118,7 @@ public class ProductServiceImpl implements IProductService {
         return modelMapper.map(updatedProduct, ProductDto.class);
 
     }
+
     @Override
     public void changeStatus(Long ProductId) {
         Optional<Product> existingProduct = productRepository.findById(ProductId);
@@ -165,7 +164,7 @@ public class ProductServiceImpl implements IProductService {
     public List<ProductDto> getProductByCategoryId(long category) {
         List<Product> products = productRepository.findByCategoryId(category);
         List<ProductDto> productDtos = new ArrayList<>();
-        for(Product product : products){
+        for (Product product : products) {
             ProductDto productDto = modelMapper.map(product, ProductDto.class);
             productDtos.add(productDto);
         }

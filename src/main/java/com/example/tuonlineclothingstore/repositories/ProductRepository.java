@@ -11,8 +11,8 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    Page<Product> findByProductNameContainingIgnoreCase(String productName, Pageable pageable);
-    Page<Product> findByProductNameContainingAndCategoryAllIgnoreCase(String productName, Category category, Pageable pageable);
+    Page<Product> findByProductNameContainingIgnoreCaseAndIsActive(String productName,Boolean booleen, Pageable pageable);
+    Page<Product> findByProductNameContainingAndCategoryAllIgnoreCaseAndIsActive(String productName, Category category,Boolean booleen, Pageable pageable);
     List<Product> findTop8ByOrderBySoldDesc();
     List<Product> findTop8ByOrderByCreateAtDesc();
 

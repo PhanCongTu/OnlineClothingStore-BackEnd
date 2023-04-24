@@ -18,7 +18,6 @@ public class ProductSizeController {
     @Autowired
     IProductSizeService iProductSizeService;
     @GetMapping("/product/{productId}")
-    @PreAuthorize("hasRole('ADMIN')")
     @ApiOperation(value = "Lấy tất cả size Product theo Product Id")
     public ResponseEntity<List<ProductSizeDto>> getAllProductSizes(@PathVariable Long productId) {
         List<ProductSizeDto> listSizes = iProductSizeService.getAllSizesByProductId(productId);
