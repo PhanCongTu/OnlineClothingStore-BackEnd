@@ -4,6 +4,7 @@ import com.example.tuonlineclothingstore.dtos.CartDto;
 import com.example.tuonlineclothingstore.dtos.Order.AddOrderDto;
 import com.example.tuonlineclothingstore.dtos.Order.OrderDto;
 import com.example.tuonlineclothingstore.dtos.OrderItemDto;
+import com.example.tuonlineclothingstore.dtos.Product.ProductDto;
 import com.example.tuonlineclothingstore.dtos.User.UserDto;
 import com.example.tuonlineclothingstore.entities.Order;
 import com.example.tuonlineclothingstore.entities.OrderItem;
@@ -13,8 +14,10 @@ import com.example.tuonlineclothingstore.services.orderitem.IOrderItemService;
 import com.example.tuonlineclothingstore.services.order.IOrderService;
 import com.example.tuonlineclothingstore.services.user.IUserService;
 import com.example.tuonlineclothingstore.utils.EnumOrderStatus;
+import com.sun.org.apache.bcel.internal.generic.SWITCH;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,14 +51,65 @@ public class OrderController {
         this.modelMapper = modelMapper;
     }
 
+    private final String column = "createAt";
+
+    @GetMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<OrderDto>> getAllOrders(@RequestParam(defaultValue = "4") int Istatus,
+                                                         @RequestParam(defaultValue = "") String searchText,
+                                                         @RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "12") int size,
+                                                         @RequestParam(defaultValue = "0") int sortType) {
+        String status = "";
+        String sort = "asc";
+        if (sortType != 0) sort = "desc";
+        switch (Istatus) {
+            case 0:
+                status = EnumOrderStatus.CHO_XAC_NHAN.name();
+                break;
+            case 1:
+                status = EnumOrderStatus.DA_CHUYEN_HANG.name();
+                break;
+            case 2:
+                status = EnumOrderStatus.DA_NHAN.name();
+                break;
+            case 3:
+                status = EnumOrderStatus.DA_HUY.name();
+                break;
+            default:
+                status = "";
+        }
+        return new ResponseEntity<>(iOrderService.filter(searchText, status, page, size, sort, column), HttpStatus.OK);
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
+    public  ResponseEntity<OrderDto> UpdateOrders(@RequestParam Long orderId,
+                                                  @RequestParam int Istatus ){
+        String status = "";
+        switch (Istatus) {
+            case 1:
+                status = EnumOrderStatus.DA_CHUYEN_HANG.name();
+                break;
+            case 2:
+                status = EnumOrderStatus.DA_NHAN.name();
+                break;
+            case 3:
+                status = EnumOrderStatus.DA_HUY.name();
+                break;
+            default:
+                status = EnumOrderStatus.CHO_XAC_NHAN.name();
+        }
+        return new ResponseEntity<>(iOrderService.updateStatus(orderId, status), HttpStatus.OK);
+    }
     /***
      *  Controller dành cho admin để xem order của user
      * @param userId : ID của user
      * @return : Danh sách các order
      */
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<OrderDto>> getAllOrder(@PathVariable Long userId) {
+    public ResponseEntity<List<OrderDto>> getAllOrder(@RequestParam Long userId) {
         List<OrderDto> orderDtos = iOrderService.getAllOrder(userId);
         return new ResponseEntity<>(orderDtos, HttpStatus.OK);
     }
@@ -84,17 +138,17 @@ public class OrderController {
     public ResponseEntity<OrderDto> addToOrder(Principal principal,
                                                @RequestBody AddOrderDto addOrderDto) {
 
-         String address = addOrderDto.getAddress();
+        String address = addOrderDto.getAddress();
 
-         String phoneNumber =addOrderDto.getPhoneNumber();
+        String phoneNumber = addOrderDto.getPhoneNumber();
 
-         String note =addOrderDto.getNote();
+        String note = addOrderDto.getNote();
 
-         List<Long> idCarts = addOrderDto.getIdCarts();
+        List<Long> idCarts = addOrderDto.getIdCarts();
 
         UserDto loginedUser = iUserService.getUserByUserName(principal.getName());
         List<CartDto> cartsWantToBuy = new ArrayList<>();
-        
+
         double totalMoney = 0;
 
 
@@ -112,8 +166,8 @@ public class OrderController {
             }
         }
 
-        for (CartDto cartDto: cartsWantToBuy) {
-            totalMoney += cartDto.getProduct().getPrice()*cartDto.getQuantity();
+        for (CartDto cartDto : cartsWantToBuy) {
+            totalMoney += cartDto.getProduct().getPrice() * cartDto.getQuantity();
         }
 
 
