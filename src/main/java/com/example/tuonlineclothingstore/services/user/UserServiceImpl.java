@@ -29,7 +29,7 @@ public class UserServiceImpl implements IUserService {
     public Page<UserDto> filter(String search, int page, int size,
                                 String sort, String column) {
         Pageable pageable = PageUtils.createPageable(page, size, sort, column);
-        Page<User> users = userRepository.findByNameContainingAndEmailContainingAllIgnoreCase(search, search, pageable);
+        Page<User> users = userRepository.findByNameContainingOrEmailContainingOrPhoneNumberContainingAllIgnoreCase(search, search, search, pageable);
         return users.map(user -> modelMapper.map(user, UserDto.class));
     }
 

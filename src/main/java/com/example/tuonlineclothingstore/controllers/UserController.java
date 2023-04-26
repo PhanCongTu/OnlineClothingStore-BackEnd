@@ -23,7 +23,6 @@ public class UserController{
         this.iUserService = iUserService;
     }
     private final int size = 10;
-    private final String sort = "asc";
     private final String column = "name";
 
     /***
@@ -39,7 +38,10 @@ public class UserController{
     @ApiOperation(value = "Lấy tất cả user")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UserDto>> getAllUsers(@RequestParam(defaultValue = "") String searchText,
-                                                  @RequestParam(defaultValue = "0") int page) {
+                                                  @RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "0") int sortType) {
+        String sort = "asc";
+        if (sortType != 0) sort = "desc";
         return new ResponseEntity<>(iUserService.filter(searchText, page, size, sort, column), HttpStatus.OK);
     }
 
