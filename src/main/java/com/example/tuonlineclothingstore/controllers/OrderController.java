@@ -79,9 +79,14 @@ public class OrderController {
             default:
                 status = "";
         }
-        return new ResponseEntity<>(iOrderService.filter(searchText, status, page, size, sort, column), HttpStatus.OK);
+        return new ResponseEntity<>(iOrderService.filter(searchText.trim(), status, page, size, sort, column), HttpStatus.OK);
     }
 
+    @GetMapping("/{orderId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<OrderDto> getOrder(@PathVariable Long orderId){
+        return new ResponseEntity<>(iOrderService.getOrder(orderId), HttpStatus.OK);
+    }
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
     public  ResponseEntity<OrderDto> UpdateOrders(@RequestParam Long orderId,

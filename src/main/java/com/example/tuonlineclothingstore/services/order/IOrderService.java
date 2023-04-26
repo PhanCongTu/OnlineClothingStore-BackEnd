@@ -13,4 +13,6 @@ public interface IOrderService {
     Page<OrderDto> filter(String searchText, String status, int page, int size, String sort, String column);
 
     OrderDto updateStatus(Long orderId, String status);
+
+    OrderDto getOrder(Long orderId);
 }

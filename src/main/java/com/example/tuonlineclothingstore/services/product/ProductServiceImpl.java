@@ -138,9 +138,7 @@ public class ProductServiceImpl implements IProductService {
             ProductDto ProductDto = modelMapper.map(Product, ProductDto.class);
             ProductDtos.add(ProductDto);
         }
-        if (ProductDtos.isEmpty()) {
-            throw new ResponseStatusException(NOT_FOUND, "Do not find any product");
-        }
+
         return ProductDtos;
     }
 
@@ -154,9 +152,7 @@ public class ProductServiceImpl implements IProductService {
             ProductDto ProductDto = modelMapper.map(Product, ProductDto.class);
             ProductDtos.add(ProductDto);
         }
-        if (ProductDtos.isEmpty()) {
-            throw new ResponseStatusException(NOT_FOUND, "Do not find any product");
-        }
+
         return ProductDtos;
     }
 
