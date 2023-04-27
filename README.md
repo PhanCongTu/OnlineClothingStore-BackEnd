@@ -3,9 +3,9 @@
 Link phần frontend (ReactJS) tại [đây](https://github.com/PhanCongTu/TuOnlineClothingStore-frontend.git).
 
 ## Công nghệ sử dụng
-Programming language : Java
-Framework: Spring Boot, Spring Security
-Database: MySQL
+<b>Programming language: </b>  Java \
+<b>Framework: </b>Spring Boot, Spring Security \
+<b>Database: </b>MySQL
 ## Các chức năng
 ### Người xem (chưa đăng nhập)
 - Xem các sản phẩm bán chạy và các sản phẩm mới
