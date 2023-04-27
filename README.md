@@ -29,3 +29,8 @@ Link phần frontend (ReactJS) tại [đây](https://github.com/PhanCongTu/TuOnl
 - Đổi trạng thái của đơn hàng (Chờ xác nhận, đã chuyển hàng, đã nhận, đã hủy).
 - Đổi trạng thái của người dùng (Hoạt động <=> Vô hiệu hóa). Người dùng bị "vô hiệu hóa" sẽ không thể đăng nhập được nữa.
 ## Cách sử dụng project
+Clone project từ github và mở project trong IDE (IntelliJ IDEA).\
+Mở file `application.yml` và đổi `username` và `password` của MySQL bạn đang dùng.
+### Database
+Mở MySQL và tạo `database` với tên `tuonlineclothingstore` và khởi chạy project trong IDE.
+Kiểm tra lại MySQL xem đã tạo các table cần thiết chưa và bắt đầu thêm database.
