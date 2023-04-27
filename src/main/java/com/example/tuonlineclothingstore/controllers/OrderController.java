@@ -12,6 +12,7 @@ import com.example.tuonlineclothingstore.entities.Product;
 import com.example.tuonlineclothingstore.services.cart.ICartService;
 import com.example.tuonlineclothingstore.services.orderitem.IOrderItemService;
 import com.example.tuonlineclothingstore.services.order.IOrderService;
+import com.example.tuonlineclothingstore.services.product.IProductService;
 import com.example.tuonlineclothingstore.services.user.IUserService;
 import com.example.tuonlineclothingstore.utils.EnumOrderStatus;
 import com.sun.org.apache.bcel.internal.generic.SWITCH;
@@ -45,9 +46,11 @@ public class OrderController {
     @Autowired
     IOrderItemService iOrderItemService;
 
+    @Autowired
+    IProductService iProductService;
     final ModelMapper modelMapper;
 
-    public OrderController(ModelMapper modelMapper) {
+    public OrderController( ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
 
