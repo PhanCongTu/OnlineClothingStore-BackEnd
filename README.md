@@ -34,3 +34,4 @@ Mở file `application.yml` và đổi `username` và `password` của MySQL b�
 ### Database
 Mở MySQL và tạo `database` với tên `tuonlineclothingstore` và khởi chạy project trong IDE.
 Kiểm tra lại MySQL xem đã tạo các table cần thiết chưa và bắt đầu thêm database.
+Link database tại [đây](https://drive.google.com/drive/folders/1Yu9GulWogS1nZt-2qiEnA8HxLjJZ2bll?usp=sharing).
