@@ -54,7 +54,7 @@ Link database tại [đây](https://drive.google.com/drive/folders/1Yu9GulWogS1n
   </li>
 <li>Tài khoản có cả role user và admin
     <ol>
-      <ul>username: useradmin0</ul>
+      <ul>username: useradmin01</ul>
       <ul>password: 123</ul>
     </ol>
   </li>
