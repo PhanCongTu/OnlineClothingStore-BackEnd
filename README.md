@@ -1,4 +1,4 @@
-# Phần backend (java pring boot) của Website bán sản phẩm thời trang
+# Phần Backend (Java Spring Boot) của Website bán sản phẩm thời trang
 
 Link phần frontend (reactJS) tại [đây](https://github.com/PhanCongTu/TuOnlineClothingStore-frontend.git).
 
