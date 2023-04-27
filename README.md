@@ -4,7 +4,7 @@ Link phần frontend (ReactJS) tại [đây](https://github.com/PhanCongTu/TuOnl
 
 ## Công nghệ sử dụng
 <b>Programming language: </b>  Java \
-<b>Framework: </b>Spring Boot, Spring Security \
+<b>Framework: </b>Spring Boot, Spring Security:JWT Authentication & Authorisation \
 <b>Database: </b>MySQL \
 Link database tại [đây](https://drive.google.com/drive/folders/1Yu9GulWogS1nZt-2qiEnA8HxLjJZ2bll?usp=sharing).
 ## Các chức năng
