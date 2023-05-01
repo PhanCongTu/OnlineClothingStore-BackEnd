@@ -3,6 +3,7 @@ package com.example.tuonlineclothingstore.controllers;
 import com.example.tuonlineclothingstore.dtos.CartDto;
 import com.example.tuonlineclothingstore.dtos.Order.AddOrderDto;
 import com.example.tuonlineclothingstore.dtos.Order.OrderDto;
+import com.example.tuonlineclothingstore.dtos.Order.RevenueDto;
 import com.example.tuonlineclothingstore.dtos.OrderItemDto;
 import com.example.tuonlineclothingstore.dtos.Product.ProductDto;
 import com.example.tuonlineclothingstore.dtos.User.UserDto;
@@ -204,4 +205,16 @@ public class OrderController {
         return new ResponseEntity<>(newOrder, HttpStatus.OK);
     }
 
+    @PostMapping("/revenue")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<OrderDto>> getRevenue(@RequestBody RevenueDto revenueDto){
+        System.out.println("Bat dau: " + revenueDto.getThoiGianBatDau());
+        System.out.println("Ket thuc: " + revenueDto.getThoiGianKetThuc());
+        int page = 0;
+        int size = 12;
+        int sortType = 0;
+        String sort = "asc";
+        if (sortType != 0) sort = "desc";
+        return new ResponseEntity<>(iOrderService.getRevenue(revenueDto, page, size,sort,column), HttpStatus.OK);
+    }
 }

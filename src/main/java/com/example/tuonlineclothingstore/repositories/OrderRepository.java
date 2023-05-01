@@ -12,4 +12,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByUserIdOrderByCreateAtDesc(Long userId);
     Page<Order> findAllByPhoneNumberContainingAndStatusContainingAllIgnoreCase(String phoneNumber, String status, Pageable pageable);
     Page<Order> findAllByAddressContainingAndStatusContainingOrPhoneNumberContainingAndStatusContainingAllIgnoreCase(String address, String status1,String phoneNumber, String status2, Pageable pageable );
+    Page<Order> findAllByStatusContainingIgnoreCase(String status, Pageable pageable);
 }
