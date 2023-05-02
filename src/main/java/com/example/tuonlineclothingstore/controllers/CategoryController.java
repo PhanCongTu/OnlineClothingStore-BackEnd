@@ -59,10 +59,10 @@ public class CategoryController {
         return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "Xóa category theo id")
+    @ApiOperation(value = "Đổi trạng thái category")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping(value = "/change-status/{categoryId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<String> changeStatus(@PathVariable Long categoryId) {
 
         CategoryDto categoryDto = iCategoryService.getCategoryById(categoryId);
         iCategoryService.changeStatus(categoryId);
