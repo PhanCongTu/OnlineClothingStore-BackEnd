@@ -208,8 +208,7 @@ public class OrderController {
     @PostMapping("/revenue")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<OrderDto>> getRevenue(@RequestBody RevenueDto revenueDto){
-        System.out.println("Bat dau: " + revenueDto.getThoiGianBatDau());
-        System.out.println("Ket thuc: " + revenueDto.getThoiGianKetThuc());
+
         int page = 0;
         int size = 12;
         int sortType = 0;

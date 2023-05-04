@@ -82,8 +82,7 @@ public class OrderServiceImpl implements IOrderService {
         for (Order order : orders) {
             if (order.getStatus().equals(EnumOrderStatus.DA_NHAN.name())
                     && order.getCreateAt().after(revenueDto.getThoiGianBatDau())
-                    && order.getCreateAt().before(revenueDto.getThoiGianKetThuc())
-            ) {
+                    && order.getCreateAt().before(revenueDto.getThoiGianKetThuc())) {
                 orderDtos.add(modelMapper.map(order, OrderDto.class));
             }
         }
