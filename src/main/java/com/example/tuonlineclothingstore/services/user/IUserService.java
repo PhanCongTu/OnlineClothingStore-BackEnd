@@ -38,4 +38,6 @@ public interface IUserService {
     void upgradeRole(Long userId);
 
     UserDto getMyInf(Principal principal);
+
+    boolean resetPassword(String username, String newPass);
 }

@@ -1,5 +1,6 @@
 package com.example.tuonlineclothingstore.controllers;
 
+import com.example.tuonlineclothingstore.Model.Mail;
 import com.example.tuonlineclothingstore.dtos.CartDto;
 import com.example.tuonlineclothingstore.dtos.Order.AddOrderDto;
 import com.example.tuonlineclothingstore.dtos.Order.OrderDto;
@@ -10,6 +11,7 @@ import com.example.tuonlineclothingstore.dtos.User.UserDto;
 import com.example.tuonlineclothingstore.entities.Order;
 import com.example.tuonlineclothingstore.entities.OrderItem;
 import com.example.tuonlineclothingstore.entities.Product;
+import com.example.tuonlineclothingstore.services.Mail.IMailService;
 import com.example.tuonlineclothingstore.services.cart.ICartService;
 import com.example.tuonlineclothingstore.services.orderitem.IOrderItemService;
 import com.example.tuonlineclothingstore.services.order.IOrderService;
@@ -48,6 +50,8 @@ public class OrderController {
 
     @Autowired
     IProductService iProductService;
+    @Autowired
+    IMailService iMailService;
     final ModelMapper modelMapper;
 
     public OrderController( ModelMapper modelMapper) {
@@ -200,8 +204,14 @@ public class OrderController {
             iCartService.deleteCart(cartDto.getId());
         }
 
-
         newOrder.setOrderItems(orderItemDtos);
+        /// Mail
+        Mail mail = new Mail();
+        mail.setMailFrom("phancongtu25032002@gmail.com");
+        mail.setMailTo(loginedUser.getEmail());
+        mail.setMailSubject("Đặt hàng thành công");
+        mail.setMailContent("Tổng số tiền của đơn hàng của bạn là: " + totalMoney );
+        iMailService.sendEmail(mail);
         return new ResponseEntity<>(newOrder, HttpStatus.OK);
     }
 

@@ -24,5 +24,25 @@ spring:
     mvc:
         pathmatch:
             matching-strategy: ANT_PATH_MATCHER
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: phancongtu25032002@gmail.com
+        password: skttvipvxzdjhezr
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+                        required: true
+                    connectiontimeout: 5000
+                    timeout: 5000
+                    writetimeout: 5000
+mail:
+    smtp:
+        debug: true
 jwt:
     secret: K1LqzK6eeD0g0BfgOg7SKs2K1LqzK6eeD0g0BfgOg7SK1LqzK6eeD0g0BfgOg7S
+
+

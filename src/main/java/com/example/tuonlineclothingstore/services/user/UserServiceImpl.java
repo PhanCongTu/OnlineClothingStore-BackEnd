@@ -130,4 +130,14 @@ public class UserServiceImpl implements IUserService {
     public UserDto getMyInf(Principal principal){
         return modelMapper.map(userRepository.findByUserName(principal.getName()), UserDto.class);
     }
+
+    @Override
+    public boolean resetPassword(String username, String newPass) {
+
+        User existingUser = userRepository.findByUserName(username);
+        if (existingUser==null) throw new NotFoundException("User not found!");
+        existingUser.setPassword(newPass);
+        userRepository.save(existingUser);
+        return true;
+    }
 }

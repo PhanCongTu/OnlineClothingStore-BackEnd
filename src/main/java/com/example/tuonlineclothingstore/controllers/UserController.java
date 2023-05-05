@@ -1,11 +1,15 @@
 package com.example.tuonlineclothingstore.controllers;
 
+import com.example.tuonlineclothingstore.Model.Mail;
 import com.example.tuonlineclothingstore.dtos.User.ChangePasswordDto;
 import com.example.tuonlineclothingstore.dtos.User.UpdateUserDto;
 import com.example.tuonlineclothingstore.dtos.User.UserDto;
 import com.example.tuonlineclothingstore.entities.User;
+import com.example.tuonlineclothingstore.services.Mail.IMailService;
 import com.example.tuonlineclothingstore.services.user.IUserService;
+import com.google.gson.Gson;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +22,7 @@ import java.security.Principal;
 @RequestMapping("/api/user")
 @CrossOrigin("*")
 public class UserController{
+
     IUserService iUserService;
     public UserController(IUserService iUserService) {
         this.iUserService = iUserService;
@@ -140,5 +145,6 @@ public class UserController{
         iUserService.deleteUser(userId);
         return new ResponseEntity<>(String.format("User có id là %s đã bị xóa", userId), HttpStatus.OK);
     }
+
 
 }
