@@ -66,37 +66,6 @@ public class ProductServiceImpl implements IProductService {
     }
 
 
-    // Cập nhật lại Product (chỉ cập nhật những thuộc tính muốn thay đổi)
-//    @Override
-//    public ProductDto patchProduct(Long id, Map<Object, Object> ProductDto) {
-//        Optional<Product> existingProduct = productRepository.findById(id);
-//        if (!existingProduct.isPresent()) throw new NotFoundException("Can not found product !Unable to update Product!");
-//
-//        ProductDto.forEach((key, value) -> {
-//            Field field = ReflectionUtils.findField(Product.class, (String) key);
-//            field.setAccessible(true);
-//
-//            if(key.equals("category")){
-//                // Instantiate a new Gson instance.
-//                Gson gson = new Gson();
-//                JsonParser parser = new JsonParser();
-//                String json = gson.toJson(value, LinkedHashMap.class); // json is a json String
-//                JsonObject categoryDtoJsonObject = (JsonObject) parser.parse(json);
-//                CategoryDto categorydto = iCategoryService.getCategoryById(gson.fromJson(categoryDtoJsonObject, CategoryDto.class).getId());
-//                existingProduct.get().setCategory(modelMapper.map(categorydto, Category.class));
-//                return;
-//            }
-//
-//            ReflectionUtils.setField(field, existingProduct.get(), (Object) value);
-//        });
-//        existingProduct.get().setUpdateAt(new Date(new java.util.Date().getTime()));
-//        Product updatedProduct = productRepository.save(existingProduct.get());
-//        ProductDto updatedProductDto = modelMapper.map(updatedProduct, ProductDto.class);
-//
-//        return updatedProductDto;
-//
-//    }
-
     // Cập nhật lại Product (Cập nhật lại toàn bộ các thuộc tính)
     @Override
     public ProductDto updateProduct(Long id, UpdateProductDto updateProductDto) {

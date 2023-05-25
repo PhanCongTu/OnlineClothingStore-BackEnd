@@ -10,7 +10,6 @@ import com.example.tuonlineclothingstore.services.user.IUserService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,8 +51,7 @@ public class CartServiceImpl implements ICartService {
         }
     Cart cart = modelMapper.map(cartDto, Cart.class);
     cart.setUser(modelMapper.map(iUserService.getUserById(userId), User.class));
-    CartDto savedCardDto = modelMapper.map(cartRepository.save(cart), CartDto.class);
-        return savedCardDto;
+        return modelMapper.map(cartRepository.save(cart), CartDto.class);
     }
 
     @Override
