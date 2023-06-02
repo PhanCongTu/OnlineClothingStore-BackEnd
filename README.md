@@ -59,3 +59,6 @@ Link database tại [đây](https://drive.google.com/drive/folders/1Yu9GulWogS1n
     </ol>
   </li>
 </ol>
+
+![image](https://github.com/PhanCongTu/OnlineClothingStore-BackEnd/assets/94525644/51550b78-c7c9-4687-8040-bcdf015dce2f)
+
