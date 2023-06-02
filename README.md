@@ -68,7 +68,9 @@ Link database tại [đây](https://drive.google.com/drive/folders/1Yu9GulWogS1n
 ![image](https://github.com/PhanCongTu/OnlineClothingStore-BackEnd/assets/94525644/db1bc4f0-b063-4550-b483-ff0d56a7c0fd)
 	Giao diện đăng ký tài khoản mới của người dùng (user). Chỉ có thể đăng ký tài khoản mới dành cho người dùng (user), không thể đăng ký tài khoản của người quản trị (admin). Nhập thông tin cần thiết và nhấn “Đăng ký” để đăng ký tài khoản.
 
+
 ### Giao diện của người xem.
+
 ![image](https://github.com/PhanCongTu/OnlineClothingStore-BackEnd/assets/94525644/c512696f-de17-4571-b658-2405113a2675)
 ![image](https://github.com/PhanCongTu/OnlineClothingStore-BackEnd/assets/94525644/a68ef0d0-ccab-4d3f-84b4-e2ab2a665b6e)
 	Trang chủ, cho phép người xem (chưa đăng nhập) xem 8 sản phẩm bán chạy nhất hoặc 8 sản phẩm mới nhất của cửa hàng.
@@ -78,8 +80,10 @@ Link database tại [đây](https://drive.google.com/drive/folders/1Yu9GulWogS1n
   
 ![image](https://github.com/PhanCongTu/OnlineClothingStore-BackEnd/assets/94525644/ddfc6d21-7dd2-474f-9199-75cc4605f72d)
   Nhấn chọn vô “Xem chi tiết” ở bất kì sản phẩm nào sẽ hiện lên trang hiện thị chi tiết của sản phẩm đó. Tuy nhiên, để đặt hàng thì người xem phải đăng nhập để trở thành người dùng thì mới có thể đặt hàng được.
-  
+
+
 ### Giao diện của người dùng
+
 ![image](https://github.com/PhanCongTu/OnlineClothingStore-BackEnd/assets/94525644/9b6767fa-8da4-48a2-9d37-ecce788e7bf7)
 	Trang chủ, trang cửa hàng của người dùng (người đã đăng nhập) sẽ giống y hệt với người xem, tuy nhiên sẽ có thêm thanh điều hướng để thực hiện thêm các chức năng của người dùng như: Tài khoản của tôi, giỏ hàng, lịch sử mua hàng và đăng xuất.
   
@@ -101,7 +105,9 @@ Link database tại [đây](https://drive.google.com/drive/folders/1Yu9GulWogS1n
 ![image](https://github.com/PhanCongTu/OnlineClothingStore-BackEnd/assets/94525644/99b22f0e-9a1a-4bf6-bbf8-56465a7abde5)
 	Trang “Tài khoản của tôi”, cho phép người dùng xem lại thông tin cá nhân. Nếu muốn chỉnh sửa thông tin cơ bản thì người dùng nhập thôn tin mới và nhấn “Chỉnh sửa” để thay đổi thông tin. Với ảnh đại diện cũng tương tự, nhấn “Choose File” và chọn ảnh đại diện mới và nhấn “Chỉnh sửa” để lưu. Riêng phần đổi mật khẩu, người dùng sẽ phải nhập mật khẩu cũ và 2 lần mật khẩu mới, nếu mật khẩu cũ chính xác và mật khẩu mới hợp lệ thì mới được phép đổi.
   
+  
 ### Giao diện người quản trị
+
 ![image](https://github.com/PhanCongTu/OnlineClothingStore-BackEnd/assets/94525644/f2fe2988-2cec-44df-aeab-ecc82e039100)
 	Cũng tương tự như người dùng, người quản trị cũng có trang chủ, trang cửa hàng và trang chi tiết sản phẩm y hệt giao diện của người xem. Tuy nhiên, sự khác biệt nằm ở thanh điều hướng. Người quản trị có thể đến trang “Tài khoản của tôi” để chỉnh sửa thông tin cá nhân giống như người dùng. Ngoài ra, người quản trị còn có thể đến trang “Danh cho quản trị viên” để thực hiện các thao tác nghiệp vụ.
   
