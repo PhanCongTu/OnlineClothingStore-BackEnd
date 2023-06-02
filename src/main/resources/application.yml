@@ -3,7 +3,9 @@ cloudinary:
     api-secret: TmeGg3OGrfTjPGmY4Wj9cBnNYy8
     cloud-name: dzjoxccho
 server:
-    port: 8383
+    port: 8282
+    error:
+        include-message: always
 spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
