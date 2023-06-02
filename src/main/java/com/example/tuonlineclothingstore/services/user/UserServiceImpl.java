@@ -9,6 +9,7 @@ import com.example.tuonlineclothingstore.exceptions.DuplicateKeyException;
 import com.example.tuonlineclothingstore.exceptions.InvalidException;
 import com.example.tuonlineclothingstore.exceptions.NotFoundException;
 import com.example.tuonlineclothingstore.repositories.UserRepository;
+import com.example.tuonlineclothingstore.services.Mail.IMailService;
 import com.example.tuonlineclothingstore.utils.EnumRole;
 import com.example.tuonlineclothingstore.utils.PageUtils;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ import java.util.*;
 @AllArgsConstructor
 public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
+    private final IMailService iMailService;
     private ModelMapper modelMapper;
 
     @Override
@@ -139,5 +141,14 @@ public class UserServiceImpl implements IUserService {
         existingUser.setPassword(newPass);
         userRepository.save(existingUser);
         return true;
+    }
+    @Override
+    public String getResetPasswordCode(String username){
+        User existingUser = userRepository.findByUserName(username);
+        if (existingUser==null) throw new NotFoundException("User not found!");
+        Random random = new Random();
+        String resetCode = String.format("%04d", random.nextInt(10000));
+        iMailService.sendCodeForgetPassword(existingUser.getEmail(), resetCode);
+        return resetCode;
     }
 }

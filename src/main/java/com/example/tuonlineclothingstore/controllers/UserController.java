@@ -27,8 +27,6 @@ public class UserController{
     public UserController(IUserService iUserService) {
         this.iUserService = iUserService;
     }
-    private final int size = 10;
-    private final String column = "name";
 
     /***
      * @Authorize : ADMIN
@@ -47,6 +45,8 @@ public class UserController{
                                                      @RequestParam(defaultValue = "0") int sortType) {
         String sort = "asc";
         if (sortType != 0) sort = "desc";
+        String column = "name";
+        int size = 10;
         return new ResponseEntity<>(iUserService.filter(searchText, page, size, sort, column), HttpStatus.OK);
     }
 
@@ -146,5 +146,14 @@ public class UserController{
         return new ResponseEntity<>(String.format("User có id là %s đã bị xóa", userId), HttpStatus.OK);
     }
 
-
+    @GetMapping(value = "/get-reset-code")
+    public ResponseEntity<String> GetResetPasswordCode(@RequestParam String username){
+        String resetCode = iUserService.getResetPasswordCode(username);
+        return new ResponseEntity<>(resetCode, HttpStatus.OK);
+    }
+    @PutMapping(value = "/reset-password")
+    public ResponseEntity<Boolean> ResetPassword(@RequestParam String username,
+                                                 @RequestParam String newPassword){
+        return new ResponseEntity<>(iUserService.resetPassword(username, newPassword), HttpStatus.OK);
+    }
 }

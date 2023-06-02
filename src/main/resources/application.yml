@@ -3,7 +3,7 @@ cloudinary:
     api-secret: TmeGg3OGrfTjPGmY4Wj9cBnNYy8
     cloud-name: dzjoxccho
 server:
-    port: 8282
+    port: 8383
 spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
@@ -28,7 +28,7 @@ spring:
         host: smtp.gmail.com
         port: 587
         username: phancongtu25032002@gmail.com
-        password: skttvipvxzdjhezr
+        password: lvbmtkporezgjvyp
         properties:
             mail:
                 smtp:
