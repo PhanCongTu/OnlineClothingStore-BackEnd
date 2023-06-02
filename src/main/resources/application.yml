@@ -43,4 +43,4 @@ mail:
     smtp:
         debug: true
 jwt:
-    secret: K1LqzK6eeD0g0BfgOg7SKs2K1LqzK6eeD0g0BfgOg7SK1LqzK6eeD0g0BfgOg7S
+    secret: 1FE05E1FA7968F51E4A20A127CC2A16881CB909CD1A75C57C1A96C151C2B42AB
