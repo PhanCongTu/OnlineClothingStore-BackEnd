@@ -217,7 +217,7 @@ public class OrderController {
         return new ResponseEntity<>(newOrder, HttpStatus.OK);
     }
 
-    @GetMapping("/revenue")
+    @PostMapping("/revenue")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<OrderDto>> getRevenue(@RequestBody RevenueDto revenueDto,
                                                      @RequestParam(defaultValue = "createAt") String column,
@@ -227,4 +227,5 @@ public class OrderController {
         String sort = (sortType ? "asc" : "desc");
         return new ResponseEntity<>(iOrderService.getRevenue(revenueDto, page, size,sort,column), HttpStatus.OK);
     }
+
 }
