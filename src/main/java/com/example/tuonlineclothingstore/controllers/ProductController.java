@@ -23,7 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/product")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("*")
 public class ProductController {
     @Autowired
     IProductService iProductService;
@@ -31,18 +31,28 @@ public class ProductController {
     ICategoryService iCategoryService;
     @Autowired
     IProductImageService iProductImageService;
-//    private final int size = 1;
 
-    private final String column = "price";
+    /***
+     *
+     * @param searchText: từ khóa muốn tìm kiếm (productName)
+     * @param categoryId: ID category của sản phẩm
+     * @param page: Số thứ tự của trang
+     * @param column: Field muốn sắp xếp theo
+     * @param size: Số lượng kết quả của 1 trang
+     * @param sortType: sắp xếp theo:
+     *                 true => tăng dần,
+     *                 false => giảm dần
+     * @return: Trả về 1 page các product dựa trên các thông tin đầu vào
+     */
     @GetMapping("")
     public ResponseEntity<Page<ProductDto>> getAllProducts(@RequestParam(defaultValue = "") String searchText,
                                                            @RequestParam(defaultValue = "0") long categoryId,
                                                            @RequestParam(defaultValue = "0") int page,
+                                                           @RequestParam(defaultValue = "price") String column,
                                                            @RequestParam(defaultValue = "12") int size,
-                                                           @RequestParam(defaultValue = "0") int sortType
+                                                           @RequestParam(defaultValue = "true") boolean sortType
     ) {
-        String sort = "asc";
-        if (sortType!=0) sort = "desc";
+        String sort = (sortType ? "asc" : "desc") ;
         return new ResponseEntity<>(iProductService.filter(searchText,categoryId, page, size, sort, column), HttpStatus.OK);
     }
     @GetMapping("/best-selling")

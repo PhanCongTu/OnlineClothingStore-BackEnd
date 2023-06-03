@@ -58,19 +58,18 @@ public class OrderController {
         this.modelMapper = modelMapper;
     }
 
-    private final String column = "createAt";
 
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<OrderDto>> getAllOrders(@RequestParam(defaultValue = "4") int Istatus,
-                                                         @RequestParam(defaultValue = "") String searchText,
-                                                         @RequestParam(defaultValue = "0") int page,
-                                                         @RequestParam(defaultValue = "12") int size,
-                                                         @RequestParam(defaultValue = "0") int sortType) {
-        String status = "";
-        String sort = "asc";
-        if (sortType != 0) sort = "desc";
-        switch (Istatus) {
+    public ResponseEntity<Page<OrderDto>> getAllOrders(@RequestParam(defaultValue = "4") int IStatus,
+                                                       @RequestParam(defaultValue = "") String searchText,
+                                                       @RequestParam(defaultValue = "createAt") String column,
+                                                       @RequestParam(defaultValue = "0") int page,
+                                                       @RequestParam(defaultValue = "12") int size,
+                                                       @RequestParam(defaultValue = "true") boolean sortType) {
+        String status;
+        String sort = (sortType ? "asc" : "desc");
+        switch (IStatus) {
             case 0:
                 status = EnumOrderStatus.CHO_XAC_NHAN.name();
                 break;
@@ -205,25 +204,27 @@ public class OrderController {
         }
 
         newOrder.setOrderItems(orderItemDtos);
+
         /// Mail
-        Mail mail = new Mail();
-        mail.setMailFrom("phancongtu25032002@gmail.com");
-        mail.setMailTo(loginedUser.getEmail());
-        mail.setMailSubject("Đặt hàng thành công");
-        mail.setMailContent("Tổng số tiền của đơn hàng của bạn là: " + totalMoney );
-        iMailService.sendEmail(mail);
+//        Mail mail = new Mail();
+//        mail.setMailFrom("phancongtu25032002@gmail.com");
+//        mail.setMailTo(loginedUser.getEmail());
+//        mail.setMailSubject("Đặt hàng thành công");
+//        mail.setMailContent("Tổng số tiền của đơn hàng của bạn là: " + totalMoney );
+//        iMailService.sendEmail(mail);
+        //
+        iMailService.sendOrderMail(loginedUser, newOrder,orderItemDtos);
         return new ResponseEntity<>(newOrder, HttpStatus.OK);
     }
 
-    @PostMapping("/revenue")
+    @GetMapping("/revenue")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<OrderDto>> getRevenue(@RequestBody RevenueDto revenueDto){
-
-        int page = 0;
-        int size = 12;
-        int sortType = 0;
-        String sort = "asc";
-        if (sortType != 0) sort = "desc";
+    public ResponseEntity<Page<OrderDto>> getRevenue(@RequestBody RevenueDto revenueDto,
+                                                     @RequestParam(defaultValue = "createAt") String column,
+                                                     @RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "12") int size,
+                                                     @RequestParam(defaultValue = "true") boolean sortType){
+        String sort = (sortType ? "asc" : "desc");
         return new ResponseEntity<>(iOrderService.getRevenue(revenueDto, page, size,sort,column), HttpStatus.OK);
     }
 }

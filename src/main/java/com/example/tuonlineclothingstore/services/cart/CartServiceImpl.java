@@ -7,8 +7,11 @@ import com.example.tuonlineclothingstore.exceptions.NotFoundException;
 import com.example.tuonlineclothingstore.repositories.CartRepository;
 import com.example.tuonlineclothingstore.services.product.IProductService;
 import com.example.tuonlineclothingstore.services.user.IUserService;
+import com.example.tuonlineclothingstore.utils.PageUtils;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +31,12 @@ public class CartServiceImpl implements ICartService {
                 .map((cart) -> modelMapper.map(cart, CartDto.class))
                 .collect(Collectors.toList());
     }
-
+    @Override
+    public Page<CartDto> getAllCartByUserId(Long userId, int page, int size, String sort, String column) {
+        Pageable pageable = PageUtils.createPageable(page, size, sort, column);
+        Page<Cart> carts = cartRepository.findAllByUserId(userId,pageable);
+        return carts.map(cart -> modelMapper.map(cart, CartDto.class));
+    }
     @Override
     public CartDto getCartById(Long cartId) {
         Cart cart = cartRepository.findById(cartId).orElse(null);

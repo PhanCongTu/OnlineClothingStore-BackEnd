@@ -20,20 +20,25 @@ public class CategoryController {
     @Autowired
     ICategoryService iCategoryService;
 
-    private final int size = 10;
 
-    private final String column = "isDeleted";
-
+    /***
+     *
+     * @param searchText: từ khóa muốn tìm kiếm (name)
+     * @param page: Số thứ tự của trang
+     * @param column: Field muốn sắp xếp theo
+     * @param size: Số lượng kết quả của 1 trang
+     * @param sortType: sắp xếp theo:
+     *                true => tăng dần,
+     *                false => giảm dần
+     * @return: Trả về 1 page các category dựa trên các thông tin đầu vào
+     */
     @GetMapping("")
-    @ApiOperation(value = "Lấy tất cả category")
-        public ResponseEntity<Page<CategoryDto>> getAllCategory(@RequestParam(defaultValue = "") String searchText,
-                                                         @RequestParam(defaultValue = "0") int page,
-                                                         @RequestParam(defaultValue = "0") int sortType) {
-        System.out.println(searchText);
-        System.out.println(page);
-        System.out.println(sortType);
-        String sort = "asc";
-        if (sortType != 0) sort = "desc";
+    public ResponseEntity<Page<CategoryDto>> getAllCategory(@RequestParam(defaultValue = "") String searchText,
+                                                            @RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "name") String column,
+                                                            @RequestParam(defaultValue = "10") int size,
+                                                            @RequestParam(defaultValue = "true") boolean sortType) {
+        String sort = (sortType ? "asc" : "desc") ;
         return new ResponseEntity<>(iCategoryService.filter(searchText, page, size, sort, column), HttpStatus.OK);
     }
 

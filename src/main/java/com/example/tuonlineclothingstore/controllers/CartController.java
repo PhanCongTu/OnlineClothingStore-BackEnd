@@ -8,6 +8,7 @@ import com.example.tuonlineclothingstore.services.product.IProductService;
 import com.example.tuonlineclothingstore.services.user.IUserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/cart")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("*")
 
 public class CartController {
     @Autowired
@@ -30,36 +31,49 @@ public class CartController {
     IUserService iUserService;
 
     /***
-     *  Controller dành cho admin để quản lý giỏ hàng của các user
-     * @param userId : Truyền vào user ID
-     * @return : Trả về danh sách các giỏ hàng của user
+     *
+     * @param userId: ID người dùng muốn xem cart
+     * @param page: Số thứ tự của trang
+     * @param column: Field muốn sắp xếp theo
+     * @param size: Số lượng kết quả của 1 trang
+     * @param sortType: sắp xếp theo:
+     *                 true => tăng dần,
+     *                 false => giảm dần
+     * @return: Trả về 1 page các product dựa trên các thông tin đầu vào
      */
     @GetMapping("/user/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    @ApiOperation(value = "Lấy tất cả các cart của user")
-    public ResponseEntity<List<CartDto>> getAllCart(@PathVariable("userId") Long userId) {
-        List<CartDto> listCart = iCartService.getAllCartByUserId(userId);
-        if (listCart.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(listCart, HttpStatus.OK);
+    public ResponseEntity<Page<CartDto>> getAllCartByUser(@PathVariable("userId") Long userId,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "createAt") String column,
+                                                          @RequestParam(defaultValue = "12") int size,
+                                                          @RequestParam(defaultValue = "true") boolean sortType) {
+        String sort = (sortType ? "asc" : "desc") ;
+        return new ResponseEntity<>(iCartService.getAllCartByUserId(userId, page, size, sort, column), HttpStatus.OK);
     }
 
     /***
-     *  Controller của user để lấy tất cả giỏ hàng của bản thân (người đang đăng nhập)
-     * @param principal : Lấy từ token
-     * @return : Trả về danh sách các giỏ hàng của user
+     * Lấy cart của người đang đăng nhập
+     * @param principal: lấy thông tin người đang đăng nhập từ JWT
+     * @param page: Số thứ tự của trang
+     * @param column: Field muốn sắp xếp theo
+     * @param size: Số lượng kết quả của 1 trang
+     * @param sortType: sắp xếp theo:
+     *                 true => tăng dần,
+     *                 false => giảm dần
+     * @return: Trả về 1 page các product dựa trên các thông tin đầu vào
      */
     @GetMapping("/my-cart")
     @PreAuthorize("hasRole('USER')")
-    @ApiOperation(value = "Lấy tất cả các cart của user")
-    public ResponseEntity<List<CartDto>> getMyCart(Principal principal) {
+    public ResponseEntity<Page<CartDto>> getMyCart(Principal principal,
+                                                   @RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "createAt") String column,
+                                                   @RequestParam(defaultValue = "12") int size,
+                                                   @RequestParam(defaultValue = "true") boolean sortType) {
         UserDto userDto = iUserService.getUserByUserName(principal.getName());
-        List<CartDto> listCart = iCartService.getAllCartByUserId(userDto.getId());
-        if (listCart.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(listCart, HttpStatus.OK);
+        String sort = (sortType ? "asc" : "desc");
+        return new ResponseEntity<>(iCartService.getAllCartByUserId(userDto.getId(), page, size, sort, column), HttpStatus.OK);
+
     }
 
     /***

@@ -32,21 +32,23 @@ public class UserController{
      * @Authorize : ADMIN
      * @param searchText : Từ khóa muốn tìm kiếm (Tên user hoặc email)
      * @param page : Số thự tự của trang
+     * @param column : truyền tên Field muốn xắp xếp theo
+     * @param sortType: sắp xếp theo:
+     *                true => tăng dần,
+     *                false => giảm dần
+     * @param size: Số lượng kết quả trên 1 trang
      * @return : Trả về 1 Page các user theo từ khóa
-     *
      *  Nếu không chuyền vào searchText thì mặc địch sẽ tìm tất cả
      *  Nếu không chuyền vào page thì sẽ lấy trang đầu tiên
      */
     @GetMapping("")
-    @ApiOperation(value = "Lấy tất cả user")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<UserDto>> getAllUsers(@RequestParam(defaultValue = "") String searchText,
-                                                  @RequestParam(defaultValue = "0") int page,
-                                                     @RequestParam(defaultValue = "0") int sortType) {
-        String sort = "asc";
-        if (sortType != 0) sort = "desc";
-        String column = "name";
-        int size = 10;
+                                                     @RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "name") String column,
+                                                     @RequestParam(defaultValue = "10") int size,
+                                                     @RequestParam(defaultValue = "true") boolean sortType) {
+        String sort = (sortType ? "asc" : "desc") ;
         return new ResponseEntity<>(iUserService.filter(searchText, page, size, sort, column), HttpStatus.OK);
     }
 
@@ -146,14 +148,5 @@ public class UserController{
         return new ResponseEntity<>(String.format("User có id là %s đã bị xóa", userId), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/get-reset-code")
-    public ResponseEntity<String> GetResetPasswordCode(@RequestParam String username){
-        String resetCode = iUserService.getResetPasswordCode(username);
-        return new ResponseEntity<>(resetCode, HttpStatus.OK);
-    }
-    @PutMapping(value = "/reset-password")
-    public ResponseEntity<Boolean> ResetPassword(@RequestParam String username,
-                                                 @RequestParam String newPassword){
-        return new ResponseEntity<>(iUserService.resetPassword(username, newPassword), HttpStatus.OK);
-    }
+
 }
