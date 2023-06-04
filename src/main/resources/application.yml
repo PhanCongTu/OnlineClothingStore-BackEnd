@@ -9,9 +9,9 @@ server:
 spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        password: 123456
-        url: jdbc:mysql://localhost:3306/tuonlineclothingstore?useUnicode=yes&characterEncoding=UTF-8
-        username: root
+        username: sql12623547
+        password: 2KxstzWfZi
+        url: jdbc:mysql://sql12.freemysqlhosting.net:3306/sql12623547?useUnicode=yes&characterEncoding=UTF-8
     jackson:
         serialization:
             FAIL_ON_EMPTY_BEANS: false
