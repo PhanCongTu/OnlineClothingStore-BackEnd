@@ -22,7 +22,6 @@ public class TuOnlineClothingStore implements CommandLineRunner{
     public static void main(String[] args) {
         SpringApplication.run(TuOnlineClothingStore.class, args);
         System.out.println("-----------------------------------------------------------");
-        System.out.println("🚀 Server ready at http://localhost:8383");
     }
     @Override
     public void run(String... args) throws Exception {

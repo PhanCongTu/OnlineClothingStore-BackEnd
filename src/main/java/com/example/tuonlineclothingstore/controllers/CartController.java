@@ -77,6 +77,18 @@ public class CartController {
     }
 
     /***
+     *
+     * @param principal: Lấy từ JWT
+     * @return : Trả về List cart của user
+     */
+    @GetMapping("/list-my-cart")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<CartDto>> getListMyCart(Principal principal) {
+        UserDto userDto = iUserService.getUserByUserName(principal.getName());
+        return new ResponseEntity<>(iCartService.getAllCartByUserId(userDto.getId()), HttpStatus.OK);
+    }
+
+    /***
      *  Chỉ user mới có quyền cập nhật lại giỏ hàng của họ
      * @param productId : ID sản phẩm muốn cập nhật lại số lượng
      * @param quantity : Số lượng mới
