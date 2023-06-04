@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/product-size")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("*")
 public class ProductSizeController {
     @Autowired
     IProductSizeService iProductSizeService;

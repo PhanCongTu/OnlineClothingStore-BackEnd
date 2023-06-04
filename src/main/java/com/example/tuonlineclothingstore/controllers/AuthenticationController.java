@@ -29,7 +29,7 @@ import java.util.Date;
 @Slf4j
 @RestController
 @RequestMapping("/api")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("*")
 public class AuthenticationController {
     @Autowired
     IUserService iUserService;
